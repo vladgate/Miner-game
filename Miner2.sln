@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logic", "Miner2\Logic.csproj", "{4DCFCF37-3EF4-41B5-88DB-C0CC5E5AE888}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WF_Miner", "WF_Miner\WF_Miner.csproj", "{77BB1A8A-BA1E-4D64-95D0-3950E0D08301}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4DCFCF37-3EF4-41B5-88DB-C0CC5E5AE888}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DCFCF37-3EF4-41B5-88DB-C0CC5E5AE888}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DCFCF37-3EF4-41B5-88DB-C0CC5E5AE888}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DCFCF37-3EF4-41B5-88DB-C0CC5E5AE888}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77BB1A8A-BA1E-4D64-95D0-3950E0D08301}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77BB1A8A-BA1E-4D64-95D0-3950E0D08301}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77BB1A8A-BA1E-4D64-95D0-3950E0D08301}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77BB1A8A-BA1E-4D64-95D0-3950E0D08301}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F17DA7EB-6557-4A88-8BC2-7B55DFE01E4D}
+	EndGlobalSection
+EndGlobal
