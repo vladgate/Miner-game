@@ -43,6 +43,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\IMessageService.cs" />
     <Compile Include="MinerLogic\Cell.cs" />
     <Compile Include="MinerLogic\GameData.cs" />
     <Compile Include="MinerLogic\GameField.cs" />

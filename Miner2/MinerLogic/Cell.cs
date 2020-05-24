@@ -10,10 +10,13 @@ namespace MinerLogic
     {
         public CellValue CellValue;
         public bool IsMine;
-        public Cell(CellValue cellValue, bool isMine)
+        public byte X, Y; // для сохранения расположение в массиве
+        public Cell(CellValue cellValue, bool isMine, byte x, byte y)
         {
             this.CellValue = cellValue;
             this.IsMine = isMine;
+            X = x;
+            Y = y;
         }
     }
 
@@ -33,7 +36,7 @@ namespace MinerLogic
         Exploded = 0x0200,
         Question = 0x0400,
         Flag = 0x0800,
-        FrongFlag = 0x1000,
+        WrongFlag = 0x1000,
         Mine = 0x2000
     }
 }

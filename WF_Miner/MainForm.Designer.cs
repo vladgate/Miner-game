@@ -42,7 +42,6 @@
             this._txtElapsedTime = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this._txtMinesLeft = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripSplitButton1 = new System.Windows.Forms.ToolStripStatusLabel();
             this._mainPanel = new System.Windows.Forms.Panel();
             this._menuStrip.SuspendLayout();
             this._bottomStatusStrip.SuspendLayout();
@@ -75,37 +74,37 @@
             // newGameToolStripMenuItem
             // 
             this.newGameToolStripMenuItem.Name = "newGameToolStripMenuItem";
-            this.newGameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.newGameToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.newGameToolStripMenuItem.Text = "New game";
             // 
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.optionsToolStripMenuItem.Text = "Options";
             // 
             // saveGameToolStripMenuItem
             // 
             this.saveGameToolStripMenuItem.Name = "saveGameToolStripMenuItem";
-            this.saveGameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveGameToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.saveGameToolStripMenuItem.Text = "Save game";
             // 
             // loadGameToolStripMenuItem
             // 
             this.loadGameToolStripMenuItem.Name = "loadGameToolStripMenuItem";
-            this.loadGameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.loadGameToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.loadGameToolStripMenuItem.Text = "Load game";
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.aboutToolStripMenuItem.Text = "About";
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             // 
             // _bottomStatusStrip
@@ -114,7 +113,6 @@
             this._bottomStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1,
             this._txtElapsedTime,
-            this.toolStripSplitButton1,
             this.toolStripStatusLabel3,
             this._txtMinesLeft});
             this._bottomStatusStrip.Location = new System.Drawing.Point(0, 294);
@@ -151,12 +149,6 @@
             this._txtMinesLeft.Name = "_txtMinesLeft";
             this._txtMinesLeft.Size = new System.Drawing.Size(15, 17);
             this._txtMinesLeft.Text = "0";
-            // 
-            // toolStripSplitButton1
-            // 
-            this.toolStripSplitButton1.Name = "toolStripSplitButton1";
-            this.toolStripSplitButton1.Size = new System.Drawing.Size(82, 17);
-            this.toolStripSplitButton1.Text = "                         ";
             // 
             // _mainPanel
             // 
@@ -206,7 +198,6 @@
         private System.Windows.Forms.ToolStripStatusLabel _txtElapsedTime;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;
         private System.Windows.Forms.ToolStripStatusLabel _txtMinesLeft;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripSplitButton1;
         private System.Windows.Forms.Panel _mainPanel;
     }
 }

@@ -21,9 +21,6 @@ namespace MinerLogic
 
         public GameField(int width, int height, int mines)
         {
-            //исключение если некорректные опции
-
-
             _width = width;
             _height = height;
             _mines = mines;
@@ -34,14 +31,16 @@ namespace MinerLogic
         /// очищает ячейки, заполняет массив ячеек начальными значениями
         /// </summary>
         /// <returns></returns>
-        public Cell[,] Clear()
+        public Cell[,] Init()
         {
-            for (int i = 0; i < _width; i++)
+            for (byte i = 0; i < _width; i++)
             {
-                for (int j = 0; j < _height; j++)
+                for (byte j = 0; j < _height; j++)
                 {
                     _cells[i, j].IsMine = false;
                     _cells[i, j].CellValue = CellValue.Closed;
+                    _cells[i, j].X = i;
+                    _cells[i, j].Y = j;
                 }
             }
             return _cells;

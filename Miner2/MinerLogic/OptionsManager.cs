@@ -47,22 +47,28 @@ namespace MinerLogic
             get { return _gameType; }
         }
 
+        internal void SaveCurrentOptions()
+        {
+            Properties.Settings.Default.Height = _current.Height;
+            Properties.Settings.Default.Width = _current.Width;
+            Properties.Settings.Default.AmountOfMines = _current.MinesAmount;
+            Properties.Settings.Default.Save();
+
+        }
+
         public OptionsManager(Options options)
         {
             CurrentOptions = options;
         }
 
         /// <summary>
-        /// при вызове без параметров востанавливаем ранее сохраненные настройки
+        /// востанавливаем ранее сохраненные настройки
         /// </summary>
-        public OptionsManager()
-        {
-            CurrentOptions = GetOptionsFromInnerSettings();
-        }
-
-        private Options GetOptionsFromInnerSettings()
+        public static Options OptionsFromInnerSettings()
         {
             return new Options(Properties.Settings.Default.Width, Properties.Settings.Default.Height, Properties.Settings.Default.AmountOfMines);
         }
+
+
     }
 }

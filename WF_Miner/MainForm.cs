@@ -1,4 +1,4 @@
-﻿using Logic.Interfaces;
+﻿using MinerLogic.Interfaces;
 using MinerLogic.MinerPresenter;
 using System;
 using System.Collections.Generic;
@@ -41,27 +41,6 @@ namespace WF_Miner
             InitializeComponent();
         }
 
-        private void InitializeImageArray(int amountX, int amountY)
-        {
-            _imagesArray = new PictureBox[amountX, amountY];
-
-            Size size = new Size(_cellSize, _cellSize);
-            for (int i = 0; i < amountX; i++)
-            {
-                for (int j = 0; j < amountY; j++)
-                {
-                    PictureBox pb = new PictureBox();
-                    pb.Size = size;
-                    pb.Location = new Point(i * _cellSize, j * _cellSize);
-                    pb.Image = _cell_closed;
-                    pb.Name = i + "_" + j;
-                    pb.MouseDown += PictureBox_MouseDown;
-                    _imagesArray[i, j] = pb;
-                    _mainPanel.Controls.Add(pb);
-                }
-            }
-        }
-
         private void PictureBox_MouseDown(object sender, MouseEventArgs e)
         {
             Point ctrlPoint = (sender as Control).Location;
@@ -71,11 +50,9 @@ namespace WF_Miner
             }
             else if (e.Button == MouseButtons.Right)
             {
-
                 RightMouseClick?.Invoke(sender, new MouseClickEventArgs(ctrlPoint.X, ctrlPoint.Y));
             }
         }
-
 
 
         #region IMainView
@@ -107,7 +84,6 @@ namespace WF_Miner
         {
             _amountX = amountX;
             _amountY = amountY;
-            InitializeImageArray(amountX, amountY);
 
             this.Width = _cellSize * amountX + WIDTH_CORRECTION;
             this.Height = _cellSize * amountY + HEIGHT_CORRECTION;
@@ -117,13 +93,34 @@ namespace WF_Miner
 
         public void DrawEmptyGameField()
         {
+            _imagesArray = new PictureBox[_amountX, _amountY];
+
+            Size size = new Size(_cellSize, _cellSize);
             for (int i = 0; i < _amountX; i++)
             {
                 for (int j = 0; j < _amountY; j++)
                 {
-
+                    PictureBox pb = new PictureBox();
+                    pb.Size = size;
+                    pb.Location = new Point(i * _cellSize, j * _cellSize);
+                    pb.Image = _cell_closed;
+                    pb.Name = i + "_" + j;
+                    pb.MouseDown += PictureBox_MouseDown;
+                    _imagesArray[i, j] = pb;
+                    _mainPanel.Controls.Add(pb);
                 }
-            };
+            }
+        }
+
+        public void ClearGameField()
+        {
+            for (int i = 0; i < _amountX; i++)
+            {
+                for (int j = 0; j < _amountY; j++)
+                {
+                    _imagesArray[i, j].Image = _cell_closed;
+                }
+            }
         }
 
         public void SetClosedCell(int indexX, int indexY)
@@ -136,14 +133,69 @@ namespace WF_Miner
             _imagesArray[indexX, indexY].Image = _cell_empty;
         }
 
-        public void SetFlagCell(int indexX, int indexY)
+        public void SetFlag(int indexX, int indexY)
         {
             _imagesArray[indexX, indexY].Image = _cell_flag;
         }
 
-        public void SetQuestionCell(int indexX, int indexY)
+        public void SetQuestion(int indexX, int indexY)
         {
             _imagesArray[indexX, indexY].Image = _cell_question;
+        }
+
+        public void SetWrongFlag(int indexX, int indexY)
+        {
+            _imagesArray[indexX, indexY].Image = _cell_wrongFlag;
+        }
+
+        public void SetOne(int indexX, int indexY)
+        {
+            _imagesArray[indexX, indexY].Image = _cell_1;
+        }
+
+        public void SetTwo(int indexX, int indexY)
+        {
+            _imagesArray[indexX, indexY].Image = _cell_2;
+        }
+
+        public void SetThree(int indexX, int indexY)
+        {
+            _imagesArray[indexX, indexY].Image = _cell_3;
+        }
+
+        public void SetFour(int indexX, int indexY)
+        {
+            _imagesArray[indexX, indexY].Image = _cell_4;
+        }
+
+        public void SetFive(int indexX, int indexY)
+        {
+            _imagesArray[indexX, indexY].Image = _cell_5;
+        }
+
+        public void SetSix(int indexX, int indexY)
+        {
+            _imagesArray[indexX, indexY].Image = _cell_6;
+        }
+
+        public void SetSeven(int indexX, int indexY)
+        {
+            _imagesArray[indexX, indexY].Image = _cell_7;
+        }
+
+        public void SetEight(int indexX, int indexY)
+        {
+            _imagesArray[indexX, indexY].Image = _cell_8;
+        }
+
+        public void SetExploded(int indexX, int indexY)
+        {
+            _imagesArray[indexX, indexY].Image = _cell_exploded;
+        }
+
+        public void SetMine(int indexX, int indexY)
+        {
+            _imagesArray[indexX, indexY].Image = _cell_mine;
         }
 
         #endregion

@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 namespace MinerLogic
 {
     [Serializable]
-    internal struct Options
+    internal class Options
     {
-        private int _width;
-        private int _height;
-        private int _minesAmount;
+        private byte _width;
+        private byte _height;
+        private short _minesAmount;
 
         /// <summary>
         /// возращает настройки игры простой сложности
         /// </summary>
         public static Options Easy
         {
-            get { return new Options { _width = 9, _height = 9, _minesAmount = 10 }; }
+            get { return new Options(width: 9, height: 9, minesAmount: 10); }
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace MinerLogic
         /// </summary>
         public static Options Medium
         {
-            get { return new Options { _width = 16, _height = 16, _minesAmount = 40 }; }
+            get { return new Options(width: 16, height: 16, minesAmount: 40); }
         }
 
         /// <summary>
@@ -34,10 +34,10 @@ namespace MinerLogic
         /// </summary>
         public static Options Hard
         {
-            get { return new Options { _width = 30, _height = 16, _minesAmount = 99 }; }
+            get { return new Options(width: 30, height: 16, minesAmount: 99); }
         }
 
-        public Options(int width, int height, int minesAmount)
+        public Options(byte width, byte height, short minesAmount)
         {
             _width = width;
             _height = height;
@@ -72,7 +72,7 @@ namespace MinerLogic
         /// <summary>
         /// возвращает количество ячеек по горизонтали
         /// </summary>
-        public int Width
+        public byte Width
         {
             get { return _width; }
         }
@@ -80,7 +80,7 @@ namespace MinerLogic
         /// <summary>
         /// возвращает количество ячеек по вертикали
         /// </summary>
-        public int Height
+        public byte Height
         {
             get { return _height; }
         }
@@ -88,7 +88,7 @@ namespace MinerLogic
         /// <summary>
         /// возвращает количество мин на игровом поле
         /// </summary>
-        public int MinesAmount
+        public short MinesAmount
         {
             get { return _minesAmount; }
         }

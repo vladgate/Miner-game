@@ -1,4 +1,4 @@
-﻿using Logic.Interfaces;
+﻿using MinerLogic.Interfaces;
 using MinerPresenter;
 using System;
 using System.Collections.Generic;
@@ -19,7 +19,8 @@ namespace WF_Miner
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             MainForm mainView = new MainForm();
-            Presenter presenter = new Presenter(mainView);
+            IMessageService messageService = new MessageService();
+            Presenter presenter = new Presenter(mainView, messageService);
             Application.Run(mainView);
         }
     }
