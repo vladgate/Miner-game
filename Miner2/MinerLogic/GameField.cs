@@ -31,7 +31,7 @@ namespace MinerLogic
         /// очищает ячейки, заполняет массив ячеек начальными значениями
         /// </summary>
         /// <returns></returns>
-        public Cell[,] Init()
+        public void Init()
         {
             for (byte i = 0; i < _width; i++)
             {
@@ -43,7 +43,7 @@ namespace MinerLogic
                     _cells[i, j].Y = j;
                 }
             }
-            return _cells;
+            //return _cells;
         }
 
         /// <summary>

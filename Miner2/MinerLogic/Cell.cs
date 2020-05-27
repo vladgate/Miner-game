@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace MinerLogic
 {
+    [Serializable]
     public struct Cell
     {
         public CellValue CellValue;

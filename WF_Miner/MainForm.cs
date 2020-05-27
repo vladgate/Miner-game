@@ -1,4 +1,5 @@
-﻿using MinerLogic.Interfaces;
+﻿using MinerLogic.CommonPublic;
+using MinerLogic.Interfaces;
 using MinerLogic.MinerPresenter;
 using System;
 using System.Collections.Generic;
@@ -36,6 +37,7 @@ namespace WF_Miner
         private Bitmap _cell_exploded;
         private Bitmap _cell_wrongFlag;
 
+
         public MainForm()
         {
             InitializeComponent();
@@ -54,11 +56,53 @@ namespace WF_Miner
             }
         }
 
+        private void newGameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            NewGameClick?.Invoke(sender, e);
+        }
+
+        private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OptionsClick?.Invoke(sender, e);
+        }
+
+        private void saveGameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveGameClick?.Invoke(sender, e);
+        }
+
+        private void loadGameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LoadGameClick?.Invoke(sender, e);
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AboutClick?.Invoke(sender, e);
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ExitClick?.Invoke(sender, new ExitGameEventArgs(true));
+        }
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            ExitClick?.Invoke(sender, new ExitGameEventArgs(false));
+        }
+
+
 
         #region IMainView
 
         public event EventHandler<MouseClickEventArgs> LeftMouseClick;
         public event EventHandler<MouseClickEventArgs> RightMouseClick;
+        public event EventHandler NewGameClick;
+        public event EventHandler SaveGameClick;
+        public event EventHandler LoadGameClick;
+        public event EventHandler OptionsClick;
+        public event EventHandler AboutClick;
+        public event EventHandler<ExitGameEventArgs> ExitClick;
+
         public void InitializeImages(int cellSize)
         {
             _cellSize = cellSize;
@@ -82,8 +126,17 @@ namespace WF_Miner
 
         public void AdjustViewToCellsAmount(int amountX, int amountY)
         {
+            PictureBox[,] newImagesArray = new PictureBox[amountX, amountY];
+            for (int i = 0; i < Math.Min(amountX, _amountX); i++)
+            {
+                for (int j = 0; j < Math.Min(amountY, _amountY); j++)
+                {
+                    newImagesArray[i, j] = _imagesArray[i, j];
+                }
+            }
             _amountX = amountX;
             _amountY = amountY;
+            _imagesArray = newImagesArray;
 
             this.Width = _cellSize * amountX + WIDTH_CORRECTION;
             this.Height = _cellSize * amountY + HEIGHT_CORRECTION;
@@ -93,7 +146,7 @@ namespace WF_Miner
 
         public void DrawEmptyGameField()
         {
-            _imagesArray = new PictureBox[_amountX, _amountY];
+            _mainPanel.Controls.Clear();
 
             Size size = new Size(_cellSize, _cellSize);
             for (int i = 0; i < _amountX; i++)
@@ -112,6 +165,23 @@ namespace WF_Miner
             }
         }
 
+        public void CreateAndAddCell(int indexX, int indexY)
+        {
+            PictureBox pb = new PictureBox();
+            pb.Size = new Size(_cellSize, _cellSize);
+            pb.Location = new Point(indexX * _cellSize, indexY * _cellSize);
+            pb.Image = _cell_closed;
+            pb.Name = indexX + "_" + indexY;
+            pb.MouseDown += PictureBox_MouseDown;
+            _imagesArray[indexX, indexY] = pb;
+            _mainPanel.Controls.Add(pb);
+        }
+
+        public void RemoveCell(int indexX, int indexY)
+        {
+            _mainPanel.Controls.RemoveByKey(indexX + "_" + indexY);
+        }
+
         public void ClearGameField()
         {
             for (int i = 0; i < _amountX; i++)
@@ -125,7 +195,7 @@ namespace WF_Miner
 
         public void SetClosedCell(int indexX, int indexY)
         {
-            _imagesArray[indexX,indexY].Image = _cell_closed;
+            _imagesArray[indexX, indexY].Image = _cell_closed;
         }
 
         public void SetOpenEmptyCell(int indexX, int indexY)
@@ -196,6 +266,24 @@ namespace WF_Miner
         public void SetMine(int indexX, int indexY)
         {
             _imagesArray[indexX, indexY].Image = _cell_mine;
+        }
+
+        public IOptionsView CreateOptionsView()
+        {
+            IOptionsView optionsView = new OptionsForm();
+            return optionsView;
+        }
+
+        public short MinesLeft
+        {
+            get => short.Parse(_txtMinesLeft.Text);
+            set => _txtMinesLeft.Text = value.ToString();
+        }
+
+        public int Time
+        {
+            get => int.Parse(_txtElapsedTime.Text);
+            set => _txtElapsedTime.Text = value.ToString();
         }
 
         #endregion

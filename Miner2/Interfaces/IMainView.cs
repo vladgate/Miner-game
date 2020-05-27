@@ -1,4 +1,5 @@
-﻿using MinerLogic.MinerPresenter;
+﻿using MinerLogic.CommonPublic;
+using MinerLogic.MinerPresenter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +10,20 @@ namespace MinerLogic.Interfaces
 {
     public interface IMainView
     {
+        short MinesLeft { get; set; }
+        int Time { get; set; }
+
         event EventHandler<MouseClickEventArgs> LeftMouseClick;
         event EventHandler<MouseClickEventArgs> RightMouseClick;
+        event EventHandler NewGameClick;
+        event EventHandler SaveGameClick;
+        event EventHandler LoadGameClick;
+        event EventHandler OptionsClick;
+        event EventHandler AboutClick;
+        event EventHandler<ExitGameEventArgs> ExitClick;
 
         /// <summary>
-        /// инициализирует картинки ячеек с учетом размера ячейки )ширина=высота)
+        /// инициализирует картинки ячеек с учетом указанного размера ячейки (ширина=высота)
         /// </summary>
         void InitializeImages(int cellSize);
 
@@ -21,6 +31,9 @@ namespace MinerLogic.Interfaces
         /// подгоняет размеры формы и игрового поля в зависимости от количества ячеек по горизонтали и вертикали
         /// </summary>
         void AdjustViewToCellsAmount(int amountX, int amountY);
+
+        void CreateAndAddCell(int indexX, int indexY);
+        void RemoveCell(int indexX, int indexY);
 
         /// <summary>
         /// инициализирует и отрисовывает начальное игровое поле с закрытыми ячейками
@@ -111,5 +124,12 @@ namespace MinerLogic.Interfaces
         /// рисует ячейку с миной
         /// </summary>
         void SetMine(int indexX, int indexY);
+
+        /// <summary>
+        /// создает форму выбора настроек
+        /// </summary>
+        /// <param name="currentGameType">текущий тип игры</param>
+        /// <returns>новая форма, но не открытая</returns>
+        IOptionsView CreateOptionsView();
     }
 }

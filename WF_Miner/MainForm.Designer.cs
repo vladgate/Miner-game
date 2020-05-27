@@ -76,36 +76,42 @@
             this.newGameToolStripMenuItem.Name = "newGameToolStripMenuItem";
             this.newGameToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.newGameToolStripMenuItem.Text = "New game";
+            this.newGameToolStripMenuItem.Click += new System.EventHandler(this.newGameToolStripMenuItem_Click);
             // 
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.optionsToolStripMenuItem.Text = "Options";
+            this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
             // 
             // saveGameToolStripMenuItem
             // 
             this.saveGameToolStripMenuItem.Name = "saveGameToolStripMenuItem";
             this.saveGameToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.saveGameToolStripMenuItem.Text = "Save game";
+            this.saveGameToolStripMenuItem.Click += new System.EventHandler(this.saveGameToolStripMenuItem_Click);
             // 
             // loadGameToolStripMenuItem
             // 
             this.loadGameToolStripMenuItem.Name = "loadGameToolStripMenuItem";
             this.loadGameToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.loadGameToolStripMenuItem.Text = "Load game";
+            this.loadGameToolStripMenuItem.Click += new System.EventHandler(this.loadGameToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // _bottomStatusStrip
             // 
@@ -140,8 +146,8 @@
             this.toolStripStatusLabel3.Font = new System.Drawing.Font("Showcard Gothic", 9F);
             this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
             this.toolStripStatusLabel3.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.toolStripStatusLabel3.Size = new System.Drawing.Size(79, 17);
-            this.toolStripStatusLabel3.Text = "Mines left:";
+            this.toolStripStatusLabel3.Size = new System.Drawing.Size(50, 17);
+            this.toolStripStatusLabel3.Text = "Mines:";
             // 
             // _txtMinesLeft
             // 
@@ -175,6 +181,7 @@
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "Miner 2.0";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
             this._menuStrip.ResumeLayout(false);
             this._menuStrip.PerformLayout();
             this._bottomStatusStrip.ResumeLayout(false);

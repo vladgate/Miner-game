@@ -8,8 +8,8 @@ namespace MinerLogic.Interfaces
 {
     public interface IMessageService
     {
-        void ShowMessage(string message);
-        void ShowError(string message);
+        void ShowMessage(string message, string caption);
+        void ShowError(string message, string caption);
 
         /// <summary>
         /// вывод сообщения о выиграше в игре с предложением начать новую игру

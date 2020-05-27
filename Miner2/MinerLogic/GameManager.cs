@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MinerLogic.CommonPublic;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,14 +12,17 @@ namespace MinerLogic
     internal sealed class GameManager
     {
         private static GameManager _instance;
+        private const string SAVE_FILE_NAME = "game.save";
+
         private GameField _gameField;
         private OptionsManager _optionsManager;
         private int _elapsedTime; //отображает затраченное время на форме
-        private int _minesLeft; //отображает количество оставшихся мин на форме
+        private short _minesLeft; //отображает количество оставшихся мин на форме
         private Options _currentOptions;
         private GameState _gameState;
+        private GameType _gameType;
         private List<Cell> _changedCells; // хранилище ячеек, которые изменились
-        
+
         private GameManager() //конструктор
         {
             _optionsManager = new OptionsManager(OptionsManager.OptionsFromInnerSettings());
@@ -30,9 +34,18 @@ namespace MinerLogic
         {
             return _currentOptions;
         }
+        internal GameType GetGameType()
+        {
+            return _gameType;
+        }
+        internal GameState GameState { get => _gameState; }
 
+        /// <summary>
+        /// сохраняем текущие настройки в приложения
+        /// </summary>
         internal void SaveCurrentSettings()
         {
+            _optionsManager.CurrentOptions = _currentOptions;
             _optionsManager.SaveCurrentOptions();
         }
 
@@ -58,6 +71,28 @@ namespace MinerLogic
         {
             CellValue current = _gameField.Cells[indexX, indexY].CellValue;
             return current == CellValue.Closed || current == CellValue.Flag || current == CellValue.Question;
+        }
+
+
+        /// <summary>
+        /// получает все незакрытые ячейки
+        /// </summary>
+        /// <returns>масси незакрытых ячеек</returns>
+        internal Cell[] GetNotClosedCells()
+        {
+            List<Cell> cells = new List<Cell>(_currentOptions.Width * _currentOptions.Height / 4);
+            Cell[,] curCells = _gameField.Cells;
+            for (int i = 0; i < _currentOptions.Width; i++)
+            {
+                for (int j = 0; j < _currentOptions.Height; j++)
+                {
+                    if (curCells[i, j].CellValue != CellValue.Closed)
+                    {
+                        cells.Add(curCells[i, j]);
+                    }
+                }
+            };
+            return cells.ToArray();
         }
 
         /// <summary>
@@ -343,19 +378,30 @@ namespace MinerLogic
         /// <summary>
         /// возвращает количество оставшихся мин с учетом открытых и отмеченых ячеек (для отображения на форме)
         /// </summary>
-        public int MinesLeft
+        public short MinesLeft
         {
             get { return _minesLeft; }
         }
 
-        internal GameState GameState { get => _gameState;}
-
         /// <summary>
-        /// инициализация значений для новой игры
+        /// инициализация значений для новой игры с текущими настройками
         /// </summary>
-        /// <param name="gameData">данные игры</param>
         public void StartNewGame()
         {
+            _gameField = new GameField(_currentOptions.Width, _currentOptions.Height, _currentOptions.MinesAmount);
+            _gameType = _optionsManager.GetGameType(_currentOptions);
+            _gameField.Init();
+            _minesLeft = _currentOptions.MinesAmount;
+            _elapsedTime = 0;
+            _gameState = GameState.NotStarted;
+        }
+        /// <summary>
+        /// инициализация значений для новой игры с новыми настройками
+        /// </summary>
+        public void StartNewGame(Options options)
+        {
+            _currentOptions = options; //сохраняем новые значения настроек
+            _gameType = _optionsManager.GetGameType(_currentOptions);
             _gameField = new GameField(_currentOptions.Width, _currentOptions.Height, _currentOptions.MinesAmount);
             _gameField.Init();
             _minesLeft = _currentOptions.MinesAmount;
@@ -363,12 +409,17 @@ namespace MinerLogic
             _gameState = GameState.NotStarted;
         }
 
+        /// <summary>
+        /// продолжаем ранее сохраненную игру
+        /// </summary>
+        /// <param name="gameData">данные игры</param>
         public void ContinueSavedGame(GameData gameData)
         {
             _currentOptions = gameData.Options;
+            _gameType = _optionsManager.GetGameType(_currentOptions);
+            _gameField = gameData.GameField;
             _minesLeft = gameData.MinesLeft;
             _elapsedTime = gameData.ElapsedTime;
-            _gameField = gameData.GameField;
             _gameState = gameData.GameState;
         }
 
@@ -386,13 +437,14 @@ namespace MinerLogic
         /// </summary>
         /// <param name="gameData">данные игры для сохранения</param>
         /// <returns>true если успешно сохранено</returns>
-        public bool SaveGame(GameData gameData)
+        public bool SaveCurrentGame()
         {
+            GameData gameData = new GameData(_currentOptions, _gameField, _elapsedTime, _minesLeft, _gameState);
             BinaryFormatter formatter = new BinaryFormatter();
             bool success;
             try
             {
-                using (FileStream stream = new FileStream("game.save", FileMode.Create, FileAccess.Write))
+                using (FileStream stream = new FileStream(SAVE_FILE_NAME, FileMode.Create, FileAccess.Write))
                 {
                     formatter.Serialize(stream, gameData);
                 }
@@ -413,24 +465,16 @@ namespace MinerLogic
         {
             BinaryFormatter formatter = new BinaryFormatter();
             GameData data;
-            if (!File.Exists("game.save"))
+            if (!File.Exists(SAVE_FILE_NAME))
             {
                 throw new FileNotFoundException();
             }
-            using (FileStream stream = new FileStream("game.save", FileMode.Open, FileAccess.Read))
+            using (FileStream stream = new FileStream(SAVE_FILE_NAME, FileMode.Open, FileAccess.Read))
             {
                 data = (GameData)formatter.Deserialize(stream);
             }
             return data;
-
         }
-    }
-    internal enum GameType : byte
-    {
-        Easy = 0,
-        Medium = 1,
-        Hard = 2,
-        Custom = 4
     }
     internal enum GameState : byte
     {

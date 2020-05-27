@@ -10,14 +10,14 @@ namespace WF_Miner
 {
     internal sealed class MessageService : IMessageService
     {
-        public void ShowError(string message)
+        public void ShowError(string message, string caption)
         {
-            MessageBox.Show(message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        public void ShowMessage(string message)
+        public void ShowMessage(string message, string caption)
         {
-            MessageBox.Show(message, "Miner 2.0", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         public bool WinGame(string text, string caption)

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MinerLogic.MinerPresenter
 {
-    public class MouseClickEventArgs
+    public sealed class MouseClickEventArgs : EventArgs
     {
         /// <summary>
         /// класс для инкапсуляции координат нажатия мышки относительно всего игрового поля
