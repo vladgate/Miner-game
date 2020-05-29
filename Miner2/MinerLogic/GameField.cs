@@ -37,10 +37,7 @@ namespace MinerLogic
             {
                 for (byte j = 0; j < _height; j++)
                 {
-                    _cells[i, j].IsMine = false;
-                    _cells[i, j].CellValue = CellValue.Closed;
-                    _cells[i, j].X = i;
-                    _cells[i, j].Y = j;
+                    _cells[i, j] = new Cell(CellValue.Closed, false, i, j);
                 }
             }
             //return _cells;

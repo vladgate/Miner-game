@@ -358,7 +358,7 @@ namespace MinerPresenter
             {
                 _optionsView.EnableCustomValues(false);
             }
-            _optionsView.Show();
+            _optionsView.ShowDialog();
         }
 
         private void OptionsView_ConfirmSelectionClick(object sender, MinerLogic.CommonPublic.ChangeOptionsEventArgs e)

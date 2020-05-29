@@ -1,5 +1,6 @@
 ﻿using MinerLogic.CommonPublic;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,13 +22,17 @@ namespace MinerLogic
         private Options _currentOptions;
         private GameState _gameState;
         private GameType _gameType;
+        private Cell[,] _cells;
         private List<Cell> _changedCells; // хранилище ячеек, которые изменились
+        private List<Cell> _recursionInvokedCells;// хранилище ячеек, которые были рекурсивно обработаны после левого клика мыши
 
+        //static int count = 0;
         private GameManager() //конструктор
         {
             _optionsManager = new OptionsManager(OptionsManager.OptionsFromInnerSettings());
             _currentOptions = _optionsManager.CurrentOptions;
             _changedCells = new List<Cell>(_currentOptions.Width * _currentOptions.Height >> 2);
+            _recursionInvokedCells = new List<Cell>(_currentOptions.Width * _currentOptions.Height >> 2);
         }
 
         internal Options GetCurrentOptions()
@@ -69,7 +74,7 @@ namespace MinerLogic
         /// </summary>
         internal bool IsClosedCell(int indexX, int indexY)
         {
-            CellValue current = _gameField.Cells[indexX, indexY].CellValue;
+            CellValue current = _cells[indexX, indexY].CellValue;
             return current == CellValue.Closed || current == CellValue.Flag || current == CellValue.Question;
         }
 
@@ -81,14 +86,13 @@ namespace MinerLogic
         internal Cell[] GetNotClosedCells()
         {
             List<Cell> cells = new List<Cell>(_currentOptions.Width * _currentOptions.Height / 4);
-            Cell[,] curCells = _gameField.Cells;
             for (int i = 0; i < _currentOptions.Width; i++)
             {
                 for (int j = 0; j < _currentOptions.Height; j++)
                 {
-                    if (curCells[i, j].CellValue != CellValue.Closed)
+                    if (_cells[i, j].CellValue != CellValue.Closed)
                     {
-                        cells.Add(curCells[i, j]);
+                        cells.Add(_cells[i, j]);
                     }
                 }
             };
@@ -100,7 +104,7 @@ namespace MinerLogic
         /// </summary>
         internal bool IsFlagCell(int indexX, int indexY)
         {
-            return _gameField.Cells[indexX, indexY].CellValue == CellValue.Flag;
+            return _cells[indexX, indexY].CellValue == CellValue.Flag;
         }
 
         /// <summary>
@@ -118,9 +122,9 @@ namespace MinerLogic
                 posY = rnd.Next(_currentOptions.Height);
                 if (posX == busyX && posY == busyY)
                     continue;
-                if (!_gameField.Cells[posX, posY].IsMine)
+                if (!_cells[posX, posY].IsMine)
                 {
-                    _gameField.Cells[posX, posY].IsMine = true;
+                    _cells[posX, posY].IsMine = true;
                     alreadyMinesPlaced++;
                 }
             }
@@ -133,22 +137,31 @@ namespace MinerLogic
         internal Cell[] ApplyLeftClick(int indexX, int indexY)
         {
             _changedCells.Clear();// очищаем хранилище для измененных ячеек
+            _recursionInvokedCells.Clear(); // очищаем хранилище для рекурсивно обработаных ячеек
             if (_gameState == GameState.NotStarted) //надо провести начальное размещение мин на игровом поле
             {
                 PlaceMines(indexX, indexY); //размещение мин на поле
-                HandleEmptyCell(indexX, indexY); // обработка незанятой ячейки
+                //HandleEmptyCell(indexX, indexY); // обработка незанятой ячейки
+                //HandleEmptyCellQueue(indexX, indexY);//22.6
+                HandleEmptyCellStack(indexX, indexY);//20.4/20.6/
                 //таймер надо запустить где-то здесь
                 _gameState = GameState.InProgress; // игра началась
+                if (_gameField.IsLastCellLeft())
+                {
+                    WinGame();
+                }
             }
             else
             {
-                if (_gameField.Cells[indexX, indexY].IsMine) //попали на мину
+                if (_cells[indexX, indexY].IsMine) //попали на мину
                 {
                     LooseGame(indexX, indexY);
                 }
                 else
                 {
-                    HandleEmptyCell(indexX, indexY);
+                    //HandleEmptyCell(indexX, indexY);
+                    //HandleEmptyCellQueue(indexX, indexY);
+                    HandleEmptyCellStack(indexX, indexY);
                     //SetImages();
                     if (_gameField.IsLastCellLeft())
                     {
@@ -172,20 +185,20 @@ namespace MinerLogic
                 {
                     if (i == cellX && j == cellY)
                     {
-                        _gameField.Cells[i, j].CellValue = CellValue.Exploded;
-                        _changedCells.Add(_gameField.Cells[i, j]);
+                        _cells[i, j].CellValue = CellValue.Exploded;
+                        _changedCells.Add(_cells[i, j]);
                         continue;
                     }
-                    else if (_gameField.Cells[i, j].CellValue == CellValue.Flag && !_gameField.Cells[i, j].IsMine)
+                    else if (_cells[i, j].CellValue == CellValue.Flag && !_cells[i, j].IsMine)
                     {
-                        _gameField.Cells[i, j].CellValue = CellValue.WrongFlag;
-                        _changedCells.Add(_gameField.Cells[i, j]);
+                        _cells[i, j].CellValue = CellValue.WrongFlag;
+                        _changedCells.Add(_cells[i, j]);
                         continue;
                     }
-                    else if (_gameField.Cells[i, j].IsMine)
+                    else if (_cells[i, j].IsMine)
                     {
-                        _gameField.Cells[i, j].CellValue = CellValue.Mine;
-                        _changedCells.Add(_gameField.Cells[i, j]);
+                        _cells[i, j].CellValue = CellValue.Mine;
+                        _changedCells.Add(_cells[i, j]);
                         continue;
                     }
                 }
@@ -202,14 +215,313 @@ namespace MinerLogic
             {
                 for (int j = 0; j < _currentOptions.Height; j++)
                 {
-                    if (_gameField.Cells[i, j].CellValue != CellValue.Flag && _gameField.Cells[i, j].IsMine)
+                    if (_cells[i, j].CellValue != CellValue.Flag && _cells[i, j].IsMine)
                     {
-                        _gameField.Cells[i, j].CellValue = CellValue.Mine;
-                        _changedCells.Add(_gameField.Cells[i, j]);
+                        _cells[i, j].CellValue = CellValue.Mine;
+                        _changedCells.Add(_cells[i, j]);
                     }
                 }
             }
             _gameState = GameState.Win;
+        }
+
+        private void HandleEmptyCellQueue(int cellX, int cellY)
+        {
+            byte GetMinesAround(Cell cell)
+            {
+                byte amountMinesAround = 0;
+
+                if (cell.X != 0)
+                {
+                    if (_cells[cell.X - 1, cell.Y].IsMine) //left
+                        amountMinesAround++;
+                }
+                if (cell.X != _currentOptions.Width - 1)
+                {
+                    if (_cells[cell.X + 1, cell.Y].IsMine) //right
+                        amountMinesAround++;
+                }
+                if (cell.Y != 0)
+                {
+                    if (_cells[cell.X, cell.Y - 1].IsMine) //up
+                        amountMinesAround++;
+                }
+                if (cell.Y != _currentOptions.Height - 1)
+                {
+                    if (_cells[cell.X, cell.Y + 1].IsMine) //down
+                        amountMinesAround++;
+                }
+                if (cell.X != 0 && cell.Y != 0)
+                {
+                    if (_cells[cell.X - 1, cell.Y - 1].IsMine) //left, up 
+                        amountMinesAround++;
+                }
+                if (cell.X != 0 && cell.Y != _currentOptions.Height - 1)
+                {
+                    if (_cells[cell.X - 1, cell.Y + 1].IsMine) //left, down
+                        amountMinesAround++;
+                }
+                if (cell.X != _currentOptions.Width - 1 && cell.Y != 0)
+                {
+                    if (_cells[cell.X + 1, cell.Y - 1].IsMine) //right, up
+                        amountMinesAround++;
+                }
+                if (cell.X != _currentOptions.Width - 1 && cell.Y != _currentOptions.Height - 1)
+                {
+                    if (_cells[cell.X + 1, cell.Y + 1].IsMine) //right, down
+                        amountMinesAround++;
+                }
+                return amountMinesAround;
+            }
+
+            Queue<Cell> queue = new Queue<Cell>(8);
+            queue.Enqueue(_cells[cellX, cellY]);
+            while (queue.Count != 0)
+            {
+                Cell current = queue.Dequeue();
+
+                //if (!(_cells[cellX, cellY].CellValue == CellValue.Closed || _cells[cellX, cellY].CellValue == CellValue.Question))
+                //{
+                //    continue;
+                //}
+                //count++;
+                byte minesAround = GetMinesAround(current);
+                if (minesAround == 0)
+                {
+                    _cells[current.X, current.Y].CellValue = CellValue.EmptyOpen;
+                    if (current.X != 0)
+                    {
+                        if (!_changedCells.Contains(_cells[current.X - 1, current.Y]) && !queue.Contains(_cells[current.X - 1, current.Y]) && !_cells[current.X - 1, current.Y].IsMine) //left
+                        {
+                            queue.Enqueue(_cells[current.X - 1, current.Y]);
+                        }
+                    }
+                    if (current.X != _currentOptions.Width - 1)
+                    {
+                        if (!_changedCells.Contains(_cells[current.X + 1, current.Y]) && !queue.Contains(_cells[current.X + 1, current.Y]) && !_cells[current.X + 1, current.Y].IsMine) //right
+                        {
+                            queue.Enqueue(_cells[current.X + 1, current.Y]);
+                        }
+                    }
+                    if (current.Y != 0)
+                    {
+                        if (!_changedCells.Contains(_cells[current.X, current.Y - 1]) && !queue.Contains(_cells[current.X, current.Y - 1]) && !_cells[current.X, current.Y - 1].IsMine) //up
+                        {
+                            queue.Enqueue(_cells[current.X, current.Y - 1]);
+                        }
+                    }
+                    if (current.Y != _currentOptions.Height - 1)
+                    {
+                        if (!_changedCells.Contains(_cells[current.X, current.Y + 1]) && !queue.Contains(_cells[current.X, current.Y + 1])&& !_cells[current.X, current.Y + 1].IsMine) //down
+                        {
+                            queue.Enqueue(_cells[current.X, current.Y + 1]);
+                        }
+                    }
+                    if (current.X != 0 && current.Y != 0)
+                    {
+                        if (!_changedCells.Contains(_cells[current.X - 1, current.Y - 1]) && !queue.Contains(_cells[current.X - 1, current.Y - 1])&& !_cells[current.X - 1, current.Y - 1].IsMine) //left, up 
+                        {
+                            queue.Enqueue(_cells[current.X - 1, current.Y - 1]);
+                        }
+                    }
+
+                    if (current.X != 0 && current.Y != _currentOptions.Height - 1)
+                    {
+                        if (!_changedCells.Contains(_cells[current.X - 1, current.Y + 1]) && !queue.Contains(_cells[current.X - 1, current.Y + 1])&& !_cells[current.X - 1, current.Y + 1].IsMine) //left, down
+                        {
+                            queue.Enqueue(_cells[current.X - 1, current.Y + 1]);
+                        }
+                    }
+
+                    if (current.X != _currentOptions.Width - 1 && current.Y != 0)
+                    {
+                        if (!_changedCells.Contains(_cells[current.X + 1, current.Y - 1]) && !queue.Contains(_cells[current.X + 1, current.Y - 1])&& !_cells[current.X + 1, current.Y - 1].IsMine) //right, up
+                        {
+                            queue.Enqueue(_cells[current.X + 1, current.Y - 1]);
+                        }
+                    }
+                    if (current.X != _currentOptions.Width - 1 && current.Y != _currentOptions.Height - 1)
+                    {
+                        if (!_changedCells.Contains(_cells[current.X + 1, current.Y + 1]) && !queue.Contains(_cells[current.X + 1, current.Y + 1]) && !_cells[current.X + 1, current.Y + 1].IsMine) //right, down
+                        {
+                            queue.Enqueue(_cells[current.X + 1, current.Y + 1]);
+                        }
+                    }
+                }
+                else
+                {
+                    switch (minesAround)
+                    {
+                        case 1:
+                            _cells[current.X, current.Y].CellValue = CellValue.One; break;
+                        case 2:
+                            _cells[current.X, current.Y].CellValue = CellValue.Two; break;
+                        case 3:
+                            _cells[current.X, current.Y].CellValue = CellValue.Three; break;
+                        case 4:
+                            _cells[current.X, current.Y].CellValue = CellValue.Four; break;
+                        case 5:
+                            _cells[current.X, current.Y].CellValue = CellValue.Five; break;
+                        case 6:
+                            _cells[current.X, current.Y].CellValue = CellValue.Six; break;
+                        case 7:
+                            _cells[current.X, current.Y].CellValue = CellValue.Seven; break;
+                        case 8:
+                            _cells[current.X, current.Y].CellValue = CellValue.Eight; break;
+                    }
+                }
+                _changedCells.Add(_cells[current.X, current.Y]);
+            }
+        }
+        private void HandleEmptyCellStack(int cellX, int cellY)
+        {
+            byte GetMinesAround(Cell cell)
+            {
+                byte amountMinesAround = 0;
+
+                if (cell.X != 0)
+                {
+                    if (_cells[cell.X - 1, cell.Y].IsMine) //left
+                        amountMinesAround++;
+                }
+                if (cell.X != _currentOptions.Width - 1)
+                {
+                    if (_cells[cell.X + 1, cell.Y].IsMine) //right
+                        amountMinesAround++;
+                }
+                if (cell.Y != 0)
+                {
+                    if (_cells[cell.X, cell.Y - 1].IsMine) //up
+                        amountMinesAround++;
+                }
+                if (cell.Y != _currentOptions.Height - 1)
+                {
+                    if (_cells[cell.X, cell.Y + 1].IsMine) //down
+                        amountMinesAround++;
+                }
+                if (cell.X != 0 && cell.Y != 0)
+                {
+                    if (_cells[cell.X - 1, cell.Y - 1].IsMine) //left, up 
+                        amountMinesAround++;
+                }
+                if (cell.X != 0 && cell.Y != _currentOptions.Height - 1)
+                {
+                    if (_cells[cell.X - 1, cell.Y + 1].IsMine) //left, down
+                        amountMinesAround++;
+                }
+                if (cell.X != _currentOptions.Width - 1 && cell.Y != 0)
+                {
+                    if (_cells[cell.X + 1, cell.Y - 1].IsMine) //right, up
+                        amountMinesAround++;
+                }
+                if (cell.X != _currentOptions.Width - 1 && cell.Y != _currentOptions.Height - 1)
+                {
+                    if (_cells[cell.X + 1, cell.Y + 1].IsMine) //right, down
+                        amountMinesAround++;
+                }
+                return amountMinesAround;
+            }
+
+            //bool[,] visited = new bool[_gameField.Width, _gameField.Height];
+
+            Stack<Cell> queue = new Stack<Cell>(8);
+            queue.Push(_cells[cellX, cellY]);
+            while (queue.Count != 0)
+            {
+                Cell current = queue.Pop();
+
+                //if (!(_cells[cellX, cellY].CellValue == CellValue.Closed || _cells[cellX, cellY].CellValue == CellValue.Question))
+                //{
+                //    continue;
+                //}
+                //count++;
+                byte minesAround = GetMinesAround(current);
+                if (minesAround == 0)
+                {
+                    _cells[current.X, current.Y].CellValue = CellValue.EmptyOpen;
+                    if (current.X != 0)
+                    {
+                        if (!_changedCells.Contains(_cells[current.X - 1, current.Y]) && !queue.Contains(_cells[current.X - 1, current.Y]) && !_cells[current.X - 1, current.Y].IsMine) //left
+                        {
+                            queue.Push(_cells[current.X - 1, current.Y]);
+                        }
+                    }
+                    if (current.X != _currentOptions.Width - 1)
+                    {
+                        if (!_changedCells.Contains(_cells[current.X + 1, current.Y]) && !queue.Contains(_cells[current.X + 1, current.Y]) && !_cells[current.X + 1, current.Y].IsMine) //right
+                        {
+                            queue.Push(_cells[current.X + 1, current.Y]);
+                        }
+                    }
+                    if (current.Y != 0)
+                    {
+                        if (!_changedCells.Contains(_cells[current.X, current.Y - 1]) && !queue.Contains(_cells[current.X, current.Y - 1]) && !_cells[current.X, current.Y - 1].IsMine) //up
+                        {
+                            queue.Push(_cells[current.X, current.Y - 1]);
+                        }
+                    }
+                    if (current.Y != _currentOptions.Height - 1)
+                    {
+                        if (!_changedCells.Contains(_cells[current.X, current.Y + 1]) && !queue.Contains(_cells[current.X, current.Y + 1]) && !_cells[current.X, current.Y + 1].IsMine) //down
+                        {
+                            queue.Push(_cells[current.X, current.Y + 1]);
+                        }
+                    }
+                    if (current.X != 0 && current.Y != 0)
+                    {
+                        if (!_changedCells.Contains(_cells[current.X - 1, current.Y - 1]) && !queue.Contains(_cells[current.X - 1, current.Y - 1]) && !_cells[current.X - 1, current.Y - 1].IsMine) //left, up 
+                        {
+                            queue.Push(_cells[current.X - 1, current.Y - 1]);
+                        }
+                    }
+
+                    if (current.X != 0 && current.Y != _currentOptions.Height - 1)
+                    {
+                        if (!_changedCells.Contains(_cells[current.X - 1, current.Y + 1]) && !queue.Contains(_cells[current.X - 1, current.Y + 1]) && !_cells[current.X - 1, current.Y + 1].IsMine) //left, down
+                        {
+                            queue.Push(_cells[current.X - 1, current.Y + 1]);
+                        }
+                    }
+
+                    if (current.X != _currentOptions.Width - 1 && current.Y != 0)
+                    {
+                        if (!_changedCells.Contains(_cells[current.X + 1, current.Y - 1]) && !queue.Contains(_cells[current.X + 1, current.Y - 1]) && !_cells[current.X + 1, current.Y - 1].IsMine) //right, up
+                        {
+                            queue.Push(_cells[current.X + 1, current.Y - 1]);
+                        }
+                    }
+                    if (current.X != _currentOptions.Width - 1 && current.Y != _currentOptions.Height - 1)
+                    {
+                        if (!_changedCells.Contains(_cells[current.X + 1, current.Y + 1]) && !queue.Contains(_cells[current.X + 1, current.Y + 1]) && !_cells[current.X + 1, current.Y + 1].IsMine) //right, down
+                        {
+                            queue.Push(_cells[current.X + 1, current.Y + 1]);
+                        }
+                    }
+                }
+                else
+                {
+                    switch (minesAround)
+                    {
+                        case 1:
+                            _cells[current.X, current.Y].CellValue = CellValue.One; break;
+                        case 2:
+                            _cells[current.X, current.Y].CellValue = CellValue.Two; break;
+                        case 3:
+                            _cells[current.X, current.Y].CellValue = CellValue.Three; break;
+                        case 4:
+                            _cells[current.X, current.Y].CellValue = CellValue.Four; break;
+                        case 5:
+                            _cells[current.X, current.Y].CellValue = CellValue.Five; break;
+                        case 6:
+                            _cells[current.X, current.Y].CellValue = CellValue.Six; break;
+                        case 7:
+                            _cells[current.X, current.Y].CellValue = CellValue.Seven; break;
+                        case 8:
+                            _cells[current.X, current.Y].CellValue = CellValue.Eight; break;
+                    }
+                }
+                _changedCells.Add(_cells[current.X, current.Y]);
+            }
         }
 
         /// <summary>
@@ -217,104 +529,112 @@ namespace MinerLogic
         /// </summary>
         private void HandleEmptyCell(int cellX, int cellY)
         {
-            Cell[,] cells = _gameField.Cells;
-            if (!(cells[cellX, cellY].CellValue == CellValue.Closed || cells[cellX, cellY].CellValue == CellValue.Question))
+            if (!(_cells[cellX, cellY].CellValue == CellValue.Closed || _cells[cellX, cellY].CellValue == CellValue.Question))
             {
                 return;
             }
-            int amountMinesAround = 0;
+            //count++;
+
+            byte amountMinesAround = 0;
             List<Cell> recursionList = new List<Cell>(); // list for recursion
 
-            if (cells[cellX, cellY].X != 0)
+            if (_cells[cellX, cellY].X != 0)
             {
-                if (cells[cellX - 1, cellY].IsMine)//left
+                if (_cells[cellX - 1, cellY].IsMine) //left
                 {
                     amountMinesAround++;
                 }
                 else
                 {
-                    if (!_changedCells.Contains(cells[cellX - 1, cellY]))
-                        recursionList.Add(cells[cellX - 1, cellY]);
-                }
-            }
-            if (cells[cellX, cellY].X != _currentOptions.Width - 1)
-            {
-                if (cells[cellX + 1, cellY].IsMine) //right
-                    amountMinesAround++;
-                else
-                {
-                    if (!_changedCells.Contains(cells[cellX + 1, cellY]))
-                        recursionList.Add(cells[cellX + 1, cellY]);
+                    if (!_changedCells.Contains(_cells[cellX - 1, cellY]))
+                        recursionList.Add(_cells[cellX - 1, cellY]);
                 }
             }
-            if (cells[cellX, cellY].Y != 0)
+            if (_cells[cellX, cellY].X != _currentOptions.Width - 1)
             {
-                if (cells[cellX, cellY - 1].IsMine) //up
+                if (_cells[cellX + 1, cellY].IsMine) //right
                     amountMinesAround++;
                 else
                 {
-                    if (!_changedCells.Contains(cells[cellX, cellY - 1]))
-                        recursionList.Add(cells[cellX, cellY - 1]);
-                }
-
-            }
-            if (cells[cellX, cellY].Y != _currentOptions.Height - 1)
-            {
-                if (cells[cellX, cellY + 1].IsMine) //down
-                    amountMinesAround++;
-                else
-                {
-                    if (!_changedCells.Contains(cells[cellX, cellY + 1]))
-                        recursionList.Add(cells[cellX, cellY + 1]);
+                    if (!_changedCells.Contains(_cells[cellX + 1, cellY]))
+                        recursionList.Add(_cells[cellX + 1, cellY]);
                 }
             }
-            if (cells[cellX, cellY].X != 0 && cells[cellX, cellY].Y != 0)
+            if (_cells[cellX, cellY].Y != 0)
             {
-                if (cells[cellX - 1, cellY - 1].IsMine) //left, up 
+                if (_cells[cellX, cellY - 1].IsMine) //up
                     amountMinesAround++;
                 else
                 {
-                    if (!_changedCells.Contains(cells[cellX - 1, cellY - 1]))
-                        recursionList.Add(cells[cellX - 1, cellY - 1]);
+                    if (!_changedCells.Contains(_cells[cellX, cellY - 1]))
+                        recursionList.Add(_cells[cellX, cellY - 1]);
                 }
             }
-            if (cells[cellX, cellY].X != 0 && cells[cellX, cellY].Y != _currentOptions.Height - 1)
+            if (_cells[cellX, cellY].Y != _currentOptions.Height - 1)
             {
-                if (cells[cellX - 1, cellY + 1].IsMine) //left, down
+                if (_cells[cellX, cellY + 1].IsMine) //down
                     amountMinesAround++;
                 else
                 {
-                    if (!_changedCells.Contains(cells[cellX - 1, cellY + 1]))
-                        recursionList.Add(cells[cellX - 1, cellY + 1]);
+                    if (!_changedCells.Contains(_cells[cellX, cellY + 1]))
+                        recursionList.Add(_cells[cellX, cellY + 1]);
                 }
             }
-            if (cells[cellX, cellY].X != _currentOptions.Width - 1 && cells[cellX, cellY].Y != 0)
+            if (_cells[cellX, cellY].X != 0 && _cells[cellX, cellY].Y != 0)
             {
-                if (cells[cellX + 1, cellY - 1].IsMine) //right, up
+                if (_cells[cellX - 1, cellY - 1].IsMine) //left, up 
                     amountMinesAround++;
                 else
                 {
-                    if (!_changedCells.Contains(cells[cellX + 1, cellY - 1]))
-                        recursionList.Add(cells[cellX + 1, cellY - 1]);
+                    if (!_changedCells.Contains(_cells[cellX - 1, cellY - 1]))
+                        recursionList.Add(_cells[cellX - 1, cellY - 1]);
                 }
             }
-            if (cells[cellX, cellY].X != _currentOptions.Width - 1 && cells[cellX, cellY].Y != _currentOptions.Height - 1)
+            if (_cells[cellX, cellY].X != 0 && _cells[cellX, cellY].Y != _currentOptions.Height - 1)
             {
-                if (cells[cellX + 1, cellY + 1].IsMine) //right, down
+                if (_cells[cellX - 1, cellY + 1].IsMine) //left, down
                     amountMinesAround++;
                 else
                 {
-                    if (!_changedCells.Contains(cells[cellX + 1, cellY + 1]))
-                        recursionList.Add(cells[cellX + 1, cellY + 1]);
+                    if (!_changedCells.Contains(_cells[cellX - 1, cellY + 1]))
+                        recursionList.Add(_cells[cellX - 1, cellY + 1]);
+                }
+            }
+            if (_cells[cellX, cellY].X != _currentOptions.Width - 1 && _cells[cellX, cellY].Y != 0)
+            {
+                if (_cells[cellX + 1, cellY - 1].IsMine) //right, up
+                    amountMinesAround++;
+                else
+                {
+                    if (!_changedCells.Contains(_cells[cellX + 1, cellY - 1]))
+                        recursionList.Add(_cells[cellX + 1, cellY - 1]);
+                }
+            }
+            if (_cells[cellX, cellY].X != _currentOptions.Width - 1 && _cells[cellX, cellY].Y != _currentOptions.Height - 1)
+            {
+                if (_cells[cellX + 1, cellY + 1].IsMine) //right, down
+                    amountMinesAround++;
+                else
+                {
+                    if (!_changedCells.Contains(_cells[cellX + 1, cellY + 1]))
+                        recursionList.Add(_cells[cellX + 1, cellY + 1]);
                 }
             }
 
             if (amountMinesAround == 0)
             {
-                cells[cellX, cellY].CellValue = CellValue.EmptyOpen;
-                _changedCells.Add(cells[cellX, cellY]);
+                _cells[cellX, cellY].CellValue = CellValue.EmptyOpen;
+                _changedCells.Add(_cells[cellX, cellY]);
                 foreach (Cell c in recursionList)
                 {
+                    if (_recursionInvokedCells.Contains(c))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        _recursionInvokedCells.Add(c);
+                    }
                     HandleEmptyCell(c.X, c.Y);
                 }
             }
@@ -323,23 +643,23 @@ namespace MinerLogic
                 switch (amountMinesAround)
                 {
                     case 1:
-                        cells[cellX, cellY].CellValue = CellValue.One; break;
+                        _cells[cellX, cellY].CellValue = CellValue.One; break;
                     case 2:
-                        cells[cellX, cellY].CellValue = CellValue.Two; break;
+                        _cells[cellX, cellY].CellValue = CellValue.Two; break;
                     case 3:
-                        cells[cellX, cellY].CellValue = CellValue.Three; break;
+                        _cells[cellX, cellY].CellValue = CellValue.Three; break;
                     case 4:
-                        cells[cellX, cellY].CellValue = CellValue.Four; break;
+                        _cells[cellX, cellY].CellValue = CellValue.Four; break;
                     case 5:
-                        cells[cellX, cellY].CellValue = CellValue.Five; break;
+                        _cells[cellX, cellY].CellValue = CellValue.Five; break;
                     case 6:
-                        cells[cellX, cellY].CellValue = CellValue.Six; break;
+                        _cells[cellX, cellY].CellValue = CellValue.Six; break;
                     case 7:
-                        cells[cellX, cellY].CellValue = CellValue.Seven; break;
+                        _cells[cellX, cellY].CellValue = CellValue.Seven; break;
                     case 8:
-                        cells[cellX, cellY].CellValue = CellValue.Eight; break;
+                        _cells[cellX, cellY].CellValue = CellValue.Eight; break;
                 }
-                _changedCells.Add(cells[cellX, cellY]);
+                _changedCells.Add(_cells[cellX, cellY]);
             }
         }
 
@@ -349,22 +669,21 @@ namespace MinerLogic
         /// <returns>возращает новое значение в ячейке</returns>
         internal Cell ApplyRightClick(int indexX, int indexY)
         {
-            Cell currentCell = _gameField.Cells[indexX, indexY];
-            switch (currentCell.CellValue)
+            switch (_cells[indexX, indexY].CellValue)
             {
                 case CellValue.Closed:
-                    _gameField.Cells[indexX, indexY].CellValue = CellValue.Flag;
+                    _cells[indexX, indexY].CellValue = CellValue.Flag;
                     _minesLeft--;
                     break;
                 case CellValue.Flag:
-                    _gameField.Cells[indexX, indexY].CellValue = CellValue.Question;
+                    _cells[indexX, indexY].CellValue = CellValue.Question;
                     _minesLeft++;
                     break;
                 case CellValue.Question:
-                    _gameField.Cells[indexX, indexY].CellValue = CellValue.Closed;
+                    _cells[indexX, indexY].CellValue = CellValue.Closed;
                     break;
             }
-            return _gameField.Cells[indexX, indexY];
+            return _cells[indexX, indexY];
         }
 
         /// <summary>
@@ -391,6 +710,7 @@ namespace MinerLogic
             _gameField = new GameField(_currentOptions.Width, _currentOptions.Height, _currentOptions.MinesAmount);
             _gameType = _optionsManager.GetGameType(_currentOptions);
             _gameField.Init();
+            _cells = _gameField.Cells;
             _minesLeft = _currentOptions.MinesAmount;
             _elapsedTime = 0;
             _gameState = GameState.NotStarted;
@@ -404,6 +724,7 @@ namespace MinerLogic
             _gameType = _optionsManager.GetGameType(_currentOptions);
             _gameField = new GameField(_currentOptions.Width, _currentOptions.Height, _currentOptions.MinesAmount);
             _gameField.Init();
+            _cells = _gameField.Cells;
             _minesLeft = _currentOptions.MinesAmount;
             _elapsedTime = 0;
             _gameState = GameState.NotStarted;
@@ -418,6 +739,7 @@ namespace MinerLogic
             _currentOptions = gameData.Options;
             _gameType = _optionsManager.GetGameType(_currentOptions);
             _gameField = gameData.GameField;
+            _cells = _gameField.Cells;
             _minesLeft = gameData.MinesLeft;
             _elapsedTime = gameData.ElapsedTime;
             _gameState = gameData.GameState;

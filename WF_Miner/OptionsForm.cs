@@ -164,5 +164,9 @@ namespace WF_Miner
             }
         }
 
+        void IOptionsView.ShowDialog()
+        {
+            this.ShowDialog();
+        }
     }
 }

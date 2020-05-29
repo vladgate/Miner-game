@@ -23,7 +23,7 @@ namespace MinerLogic.Interfaces
         event EventHandler CustomGameSelect;
         event EventHandler<ChangeOptionsEventArgs> ConfirmSelectionClick;
 
-        void Show();
+        void ShowDialog();
         void Close();
         void SetSelectedOption(GameType currentGameType);
     }

@@ -19,6 +19,10 @@ namespace MinerLogic
             X = x;
             Y = y;
         }
+        public override int GetHashCode()
+        {
+            return X<<4^Y;
+        }
     }
 
     [Flags]

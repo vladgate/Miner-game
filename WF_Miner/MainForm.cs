@@ -270,7 +270,8 @@ namespace WF_Miner
 
         public IOptionsView CreateOptionsView()
         {
-            IOptionsView optionsView = new OptionsForm();
+            OptionsForm optionsView = new OptionsForm();
+            optionsView.Location = new Point(Location.X + Width / 2 - optionsView.Width / 2, Location.Y + Height / 2 - optionsView.Height / 2);
             return optionsView;
         }
 
