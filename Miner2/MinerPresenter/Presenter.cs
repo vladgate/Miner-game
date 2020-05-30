@@ -36,8 +36,7 @@ namespace MinerPresenter
 
         private void ElapsedTimeHandler(object sender, ElapsedTimeChangedEventArgs e)
         {
-            Task.Run(
-                ()=> _mainView.ElapsedTime = e.ElapsedTime);
+            Task.Run(() => _mainView.ElapsedTime = e.ElapsedTime);
         }
 
         /// <summary>

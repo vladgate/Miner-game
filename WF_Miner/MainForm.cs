@@ -299,13 +299,11 @@ namespace WF_Miner
 
         public short MinesLeft
         {
-            get => short.Parse(_txtMinesLeft.Text);
             set => _txtMinesLeft.Text = value.ToString();
         }
 
         public int ElapsedTime
         {
-            get => int.Parse(_txtElapsedTime.Text);
             set => _txtElapsedTime.Text = value.ToString();
         }
 

@@ -10,8 +10,8 @@ namespace MinerLogic.Interfaces
 {
     public interface IMainView
     {
-        short MinesLeft { get; set; }
-        int ElapsedTime { get; set; }
+        short MinesLeft { set; }
+        int ElapsedTime { set; }
 
         event EventHandler<MouseClickEventArgs> LeftMouseClick;
         event EventHandler<MouseClickEventArgs> RightMouseClick;

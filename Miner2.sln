@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logic", "Miner2\Logic.cspro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WF_Miner", "WF_Miner\WF_Miner.csproj", "{77BB1A8A-BA1E-4D64-95D0-3950E0D08301}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wpf_Miner", "Wpf_Miner\Wpf_Miner.csproj", "{BD728AFA-2A1C-4304-9775-D96A49F9387E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{77BB1A8A-BA1E-4D64-95D0-3950E0D08301}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77BB1A8A-BA1E-4D64-95D0-3950E0D08301}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77BB1A8A-BA1E-4D64-95D0-3950E0D08301}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD728AFA-2A1C-4304-9775-D96A49F9387E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD728AFA-2A1C-4304-9775-D96A49F9387E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD728AFA-2A1C-4304-9775-D96A49F9387E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD728AFA-2A1C-4304-9775-D96A49F9387E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
