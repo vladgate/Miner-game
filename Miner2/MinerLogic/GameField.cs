@@ -13,11 +13,17 @@ namespace MinerLogic
         private readonly int _width;
         private readonly int _height;
         private readonly int _mines;
+        private bool _minesPlaced;
 
-        public int Width { get =>_width; }
+        public int Width { get => _width; }
         public int Height { get => _height; }
         public int Mines { get => _mines; }
         public Cell[,] Cells { get => _cells; }
+        public bool MinesPlaced
+        {
+            get => _minesPlaced;
+            private set => _minesPlaced = value;
+        }
 
         public GameField(int width, int height, int mines)
         {
@@ -31,7 +37,7 @@ namespace MinerLogic
         /// очищает ячейки, заполняет массив ячеек начальными значениями
         /// </summary>
         /// <returns></returns>
-        public void Init()
+        public Cell[,] InitCellArray()
         {
             for (byte i = 0; i < _width; i++)
             {
@@ -40,7 +46,8 @@ namespace MinerLogic
                     _cells[i, j] = new Cell(CellValue.Closed, false, i, j);
                 }
             }
-            //return _cells;
+            _minesPlaced = false;
+            return _cells;
         }
 
         /// <summary>
@@ -67,6 +74,7 @@ namespace MinerLogic
                     alreadyMinesPlaced++;
                 }
             }
+            _minesPlaced = true;
         }
 
         /// <summary>

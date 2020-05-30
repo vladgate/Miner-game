@@ -1,4 +1,5 @@
-﻿using MinerLogic.CommonPublic;
+﻿using Microsoft.Win32;
+using MinerLogic.CommonPublic;
 using MinerLogic.Interfaces;
 using MinerLogic.MinerPresenter;
 using System;
@@ -16,8 +17,8 @@ namespace WF_Miner
 {
     public partial class MainForm : Form, IMainView
     {
-        private const int WIDTH_CORRECTION = 16;
-        private const int HEIGHT_CORRECTION = 85;
+        private readonly int WIDTH_CORRECTION;
+        private readonly int HEIGHT_CORRECTION;
         private int _cellSize;
         private int _amountX, _amountY;
         private PictureBox[,] _imagesArray;
@@ -34,13 +35,30 @@ namespace WF_Miner
         private Bitmap _cell_mine;
         private Bitmap _cell_empty;
         private Bitmap _cell_question;
-        private Bitmap _cell_exploded;
+        private Bitmap _cell_exploded; 
         private Bitmap _cell_wrongFlag;
 
 
         public MainForm()
         {
             InitializeComponent();
+            OperatingSystem os = Environment.OSVersion;
+            if (IsWindows10()) //win10 корекция размеров формы
+            {
+                WIDTH_CORRECTION = 16;
+                HEIGHT_CORRECTION = 85;
+            }
+            else
+            {
+                WIDTH_CORRECTION = 26;
+                HEIGHT_CORRECTION = 89;
+            }
+        }
+        private bool IsWindows10()
+        {
+            var reg = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+            string productName = (string)reg.GetValue("ProductName");
+            return productName.StartsWith("Windows 10");
         }
 
         private void PictureBox_MouseDown(object sender, MouseEventArgs e)
@@ -195,6 +213,10 @@ namespace WF_Miner
 
         public void SetClosedCell(int indexX, int indexY)
         {
+            if (indexX > _amountX - 1 || indexY > _amountY - 1)
+            {
+                return;
+            }
             _imagesArray[indexX, indexY].Image = _cell_closed;
         }
 
@@ -281,7 +303,7 @@ namespace WF_Miner
             set => _txtMinesLeft.Text = value.ToString();
         }
 
-        public int Time
+        public int ElapsedTime
         {
             get => int.Parse(_txtElapsedTime.Text);
             set => _txtElapsedTime.Text = value.ToString();

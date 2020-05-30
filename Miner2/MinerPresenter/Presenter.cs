@@ -4,10 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using MinerLogic;
 using MinerLogic.CommonPublic;
 using MinerLogic.Interfaces;
+using MinerLogic.MinerLogic;
 using MinerLogic.MinerPresenter;
 
 namespace MinerPresenter
@@ -28,7 +30,14 @@ namespace MinerPresenter
             _messageService = messageService;
             _gameManager = GameManager.Instance;
             _gameManager.StartNewGame();
+            _gameManager.ElapsedTimeChanged += ElapsedTimeHandler;
             InitializeMainView();
+        }
+
+        private void ElapsedTimeHandler(object sender, ElapsedTimeChangedEventArgs e)
+        {
+            Task.Run(
+                ()=> _mainView.ElapsedTime = e.ElapsedTime);
         }
 
         /// <summary>
@@ -72,8 +81,8 @@ namespace MinerPresenter
         private void WantNewGame()
         {
             ClearGameFieldSelected();
-            _mainView.MinesLeft = _gameManager.GetCurrentOptions().MinesAmount;
-            _mainView.Time = 0;
+            _mainView.MinesLeft = _gameManager.CurrentOptions.MinesAmount;
+            _mainView.ElapsedTime = 0;
             _gameManager.StartNewGame();
         }
 
@@ -94,26 +103,24 @@ namespace MinerPresenter
         /// </summary>
         private void WantNewGameWithChangedOptions(Options newOptions)
         {
-            Options curOptions = _gameManager.GetCurrentOptions();
-            if (newOptions.Width != curOptions.Width || newOptions.Height != curOptions.Height) // габариты игрового поля поменялись
+            Options prevOptions = _gameManager.CurrentOptions;
+            if (newOptions.Width != prevOptions.Width || newOptions.Height != prevOptions.Height) // габариты игрового поля поменялись
             {
                 _mainView.AdjustViewToCellsAmount(newOptions.Width, newOptions.Height);
-                DrawEmptyGameFieldAdvanced(newOptions.Width, curOptions.Width, newOptions.Height, curOptions.Height);
+                DrawEmptyGameFieldAdvanced(newOptions.Width, prevOptions.Width, newOptions.Height, prevOptions.Height);
+                ClearGameFieldSelected();
             }
             else
             {
-                ClearGameFieldSelected(); // габариты поля не поменялись - меняем изображения открытых ячеек
+                ClearGameFieldSelected(); // габариты поля не поменялись - только меняем изображения открытых ячеек
             }
-            //_mainView.DrawEmptyGameField();
             _gameManager.StartNewGame(newOptions);
             _mainView.MinesLeft = newOptions.MinesAmount;
-            _mainView.Time = 0;
+            _mainView.ElapsedTime = 0;
             //_mainView.ClearGameField(); //очищаем открытые ячейки
             //Options current = _gameManager.GetCurrentOptions();
             //DrawEmptyGameFieldAdvanced(newOptions.Width, current.Width, newOptions.Height, current.Height);
         }
-
-
 
         /// <summary>
         /// инициация выхода из игры
@@ -133,7 +140,7 @@ namespace MinerPresenter
         private void InitializeMainView()
         {
             _mainView.InitializeImages(CELL_SIZE);
-            Options currentOptions = _gameManager.GetCurrentOptions();
+            Options currentOptions = _gameManager.CurrentOptions;
             _mainView.AdjustViewToCellsAmount(currentOptions.Width, currentOptions.Height);
             _mainView.LeftMouseClick += MainView_LeftMouseClickHandler;
             _mainView.RightMouseClick += MainView_RightMouseClickHandler;
@@ -145,7 +152,7 @@ namespace MinerPresenter
             _mainView.ExitClick += MainView_ExitClick;
             _mainView.DrawEmptyGameField();
             _mainView.MinesLeft = currentOptions.MinesAmount;
-            _mainView.Time = 0;
+            _mainView.ElapsedTime = 0;
         }
 
         /// <summary>
@@ -283,12 +290,12 @@ namespace MinerPresenter
                     }
                 }
             }
-            ClearGameFieldSelected();
+            //ClearGameFieldSelected();
         }
 
         private void MainView_LoadGameClick(object sender, EventArgs e)
         {
-            Options prevOptions = _gameManager.GetCurrentOptions();
+            Options prevOptions = _gameManager.CurrentOptions;
             int prevWidth = prevOptions.Width;
             int prevHeight = prevOptions.Height;
             GameData gameData;
@@ -306,8 +313,9 @@ namespace MinerPresenter
                 _messageService.ShowError(ex.Message, "Error");
                 return;
             }
-
             _gameManager.ContinueSavedGame(gameData);
+            _mainView.ElapsedTime = gameData.ElapsedTime;
+            _mainView.MinesLeft = gameData.MinesLeft;
             Options currentOptions = gameData.Options;
             if (prevWidth == currentOptions.Width && prevHeight == currentOptions.Height)
             {
@@ -320,7 +328,6 @@ namespace MinerPresenter
                 SetImagesInView(gameData.GameField.Cells);
             }
         }
-
         private void MainView_ExitClick(object sender, ExitGameEventArgs e)
         {
             ExitGame(e.NeedCloseView);
@@ -348,7 +355,7 @@ namespace MinerPresenter
             _optionsView.SetSelectedOption(currentGameType);
             if (currentGameType == GameType.Custom)
             {
-                Options currentOptions = _gameManager.GetCurrentOptions();
+                Options currentOptions = _gameManager.CurrentOptions;
                 _optionsView.FieldWidth = currentOptions.Width;
                 _optionsView.FieldHeight = currentOptions.Height;
                 _optionsView.Mines = currentOptions.MinesAmount;
@@ -390,7 +397,7 @@ namespace MinerPresenter
                         mines = (short)(width * height * MINES_CORRECTION); //ограничиваем количество мин в зависимости от размеров игрового поля
                     }
                     options = new Options(width, height, mines);
-                    if (options == _gameManager.GetCurrentOptions())
+                    if (options == _gameManager.CurrentOptions)
                     {
                         _optionsView.Close();
                         return;
@@ -400,17 +407,14 @@ namespace MinerPresenter
             _optionsView.Close();
             WantNewGameWithChangedOptions(options);
         }
-
         private void OptionsView_CustomGameSelect(object sender, EventArgs e)
         {
             _optionsView.EnableCustomValues(true);
         }
-
         private void OptionsView_NotCustomGameSelect(object sender, EventArgs e)
         {
             _optionsView.EnableCustomValues(false);
         }
-
 
         /// <summary>
         /// обработчик левого клика мыши

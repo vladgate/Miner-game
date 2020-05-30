@@ -48,6 +48,7 @@
     <Compile Include="Interfaces\IMessageService.cs" />
     <Compile Include="Interfaces\IOptionsView.cs" />
     <Compile Include="MinerLogic\Cell.cs" />
+    <Compile Include="MinerLogic\ElapsedTimeChangedEventArgs.cs" />
     <Compile Include="MinerLogic\GameData.cs" />
     <Compile Include="MinerLogic\GameField.cs" />
     <Compile Include="MinerLogic\GameManager.cs" />
