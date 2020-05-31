@@ -429,10 +429,27 @@ namespace MinerPresenter
             }
 
             Cell[] changedCells = _gameManager.ApplyLeftClick(indexX, indexY);
+            ChangeImages(changedCells);
+
+            if (_gameManager.GameState == GameState.Win)
+            {
+                WinGame();
+            }
+            else if (_gameManager.GameState == GameState.Loose)
+            {
+                LooseGame();
+            }
+        }
+
+        private void ChangeImages(Cell[] changedCells)
+        {
             for (int i = 0; i < changedCells.Length; i++)
             {
                 switch (changedCells[i].CellValue)
                 {
+                    case CellValue.EmptyOpen:
+                        _mainView.SetOpenEmptyCell(changedCells[i].X, changedCells[i].Y);
+                        break;
                     case CellValue.One:
                         _mainView.SetOne(changedCells[i].X, changedCells[i].Y);
                         break;
@@ -460,9 +477,6 @@ namespace MinerPresenter
                     case CellValue.Mine:
                         _mainView.SetMine(changedCells[i].X, changedCells[i].Y);
                         break;
-                    case CellValue.EmptyOpen:
-                        _mainView.SetOpenEmptyCell(changedCells[i].X, changedCells[i].Y);
-                        break;
                     case CellValue.Exploded:
                         _mainView.SetExploded(changedCells[i].X, changedCells[i].Y);
                         break;
@@ -470,14 +484,6 @@ namespace MinerPresenter
                         _mainView.SetWrongFlag(changedCells[i].X, changedCells[i].Y);
                         break;
                 }
-            }
-            if (_gameManager.GameState == GameState.Win)
-            {
-                WinGame();
-            }
-            else if (_gameManager.GameState == GameState.Loose)
-            {
-                LooseGame();
             }
         }
 
