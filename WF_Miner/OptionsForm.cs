@@ -127,38 +127,67 @@ namespace WF_Miner
 
         private void txtBoxAmountMines_Leave(object sender, EventArgs e)
         {
-            short mines = short.Parse(txtBoxAmountMines.Text);
-            if (mines < MIN_MINES || mines > MAX_MINES)
+            bool success = short.TryParse(txtBoxAmountMines.Text, out short mines);
+            if (!success || mines < MIN_MINES || mines > MAX_MINES)
             {
                 txtBoxAmountMines.Text = _initMines.ToString();
+            }
+            else
+            {
+                txtBoxAmountMines.Text = mines.ToString();
             }
         }
 
         private void txtBoxHeight_Leave(object sender, EventArgs e)
         {
-            byte height = byte.Parse(txtBoxHeight.Text);
-            if (height < MIN_HEIGHT || height > MAX_HEIGHT)
+            bool success = byte.TryParse(txtBoxHeight.Text, out byte height);
+            if (!success || height < MIN_HEIGHT || height > MAX_HEIGHT)
             {
                 txtBoxHeight.Text = _initHeigth.ToString();
+            }
+            else
+            {
+                txtBoxHeight.Text = height.ToString();
             }
         }
 
         private void txtBoxWidth_Leave(object sender, EventArgs e)
         {
-            byte width = byte.Parse(txtBoxWidth.Text);
-            if (width < MIN_WIDTH || width > MAX_WIDTH)
+            bool success = byte.TryParse(txtBoxWidth.Text, out byte width);
+            if (!success || width < MIN_WIDTH || width > MAX_WIDTH)
             {
                 txtBoxWidth.Text = _initWidth.ToString();
             }
+            else
+            {
+                txtBoxWidth.Text = width.ToString();
+            }
         }
 
-        private void txtBoxAmountMines_KeyPress(object sender, KeyPressEventArgs e)
+        private void TxtBox_KeyPress(object sender, KeyPressEventArgs e)
         {
+            bool FirstZero() //проверяем, есть ли ноль первой цифрой
+            {
+                if (e.KeyChar == '0' && ((TextBox)sender).Text == "")
+                {
+                    return true;
+                }
+                return false;
+            }
+            bool TextTooMuchLong()
+            {
+                if (((TextBox)sender).Text.Length >= 4)
+                {
+                    return true;
+                }
+                return false;
+            }
+
             if (e.KeyChar == '\b')
             {
                 return;
             }
-            if (!char.IsDigit(e.KeyChar))
+            if (FirstZero() || TextTooMuchLong() || !char.IsDigit(e.KeyChar))
             {
                 e.Handled = true;
             }

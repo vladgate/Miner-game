@@ -54,7 +54,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(205, 57);
+            this.label2.Location = new System.Drawing.Point(205, 87);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(71, 13);
             this.label2.TabIndex = 0;
@@ -63,7 +63,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(205, 85);
+            this.label3.Location = new System.Drawing.Point(205, 60);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(68, 13);
             this.label3.TabIndex = 0;
@@ -93,22 +93,24 @@
             // 
             // txtBoxWidth
             // 
-            this.txtBoxWidth.Location = new System.Drawing.Point(300, 78);
+            this.txtBoxWidth.Location = new System.Drawing.Point(300, 56);
             this.txtBoxWidth.Name = "txtBoxWidth";
             this.txtBoxWidth.Size = new System.Drawing.Size(46, 20);
             this.txtBoxWidth.TabIndex = 3;
             this.txtBoxWidth.Text = "9";
             this.txtBoxWidth.Enter += new System.EventHandler(this.txtBoxWidth_Enter);
+            this.txtBoxWidth.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxtBox_KeyPress);
             this.txtBoxWidth.Leave += new System.EventHandler(this.txtBoxWidth_Leave);
             // 
             // txtBoxHeight
             // 
-            this.txtBoxHeight.Location = new System.Drawing.Point(300, 54);
+            this.txtBoxHeight.Location = new System.Drawing.Point(300, 83);
             this.txtBoxHeight.Name = "txtBoxHeight";
             this.txtBoxHeight.Size = new System.Drawing.Size(46, 20);
             this.txtBoxHeight.TabIndex = 2;
             this.txtBoxHeight.Text = "9";
             this.txtBoxHeight.Enter += new System.EventHandler(this.txtBoxHeight_Enter);
+            this.txtBoxHeight.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxtBox_KeyPress);
             this.txtBoxHeight.Leave += new System.EventHandler(this.txtBoxHeight_Leave);
             // 
             // txtBoxAmountMines
@@ -119,7 +121,7 @@
             this.txtBoxAmountMines.TabIndex = 1;
             this.txtBoxAmountMines.Text = "10";
             this.txtBoxAmountMines.Enter += new System.EventHandler(this.txtBoxAmountMines_Enter);
-            this.txtBoxAmountMines.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtBoxAmountMines_KeyPress);
+            this.txtBoxAmountMines.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TxtBox_KeyPress);
             this.txtBoxAmountMines.Leave += new System.EventHandler(this.txtBoxAmountMines_Leave);
             // 
             // radioBtnCustom

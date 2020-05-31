@@ -131,7 +131,10 @@ namespace Wpf_Miner
 
         public IOptionsView CreateOptionsView()
         {
-            throw new NotImplementedException();
+            OptionsWindow optionsView = new OptionsWindow();
+            optionsView.Left = this.Left + this.Width / 2 - optionsView.Width/2;
+            optionsView.Top = this.Top + this.Height / 2 - optionsView.Height / 2;
+            return optionsView;
         }
 
         public void DrawEmptyGameField()
