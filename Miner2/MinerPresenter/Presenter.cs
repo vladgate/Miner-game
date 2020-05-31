@@ -21,7 +21,7 @@ namespace MinerPresenter
 
         private IMainView _mainView;
         private IMessageService _messageService;
-        IOptionsView _optionsView;
+        private IOptionsView _optionsView;
         private GameManager _gameManager;
 
         public Presenter(IMainView mainView, IMessageService messageService)
@@ -116,9 +116,6 @@ namespace MinerPresenter
             _gameManager.StartNewGame(newOptions);
             _mainView.MinesLeft = newOptions.MinesAmount;
             _mainView.ElapsedTime = 0;
-            //_mainView.ClearGameField(); //очищаем открытые ячейки
-            //Options current = _gameManager.GetCurrentOptions();
-            //DrawEmptyGameFieldAdvanced(newOptions.Width, current.Width, newOptions.Height, current.Height);
         }
 
         /// <summary>

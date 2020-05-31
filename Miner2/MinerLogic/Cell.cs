@@ -21,7 +21,7 @@ namespace MinerLogic
         }
         public override int GetHashCode()
         {
-            return X<<4^Y;
+            return X << 4 ^ Y;
         }
     }
 

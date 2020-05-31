@@ -23,10 +23,4 @@ namespace MinerLogic.MinerPresenter
         public int Y { get; }
 
     }
-
-    //public enum MouseButton
-    //{
-    //    Left = 0,
-    //    Right = 1
-    //}
 }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Wpf_Miner"
         mc:Ignorable="d"
-        Title="Miner 2.0" Width="165.154" ResizeMode="NoResize" Margin="0" Height="240" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Visibility="Visible" FontSize="14" Closed="Form_Closed">
+        Title="Miner 2.0" Width="155.821" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Margin="0" Height="234.75" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Visibility="Visible" FontSize="14" Closed="Form_Closed">
     <StackPanel Margin="0,0,2,8" Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}">
         <Menu x:Name="_mainMenu" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" FontFamily="Cooper Black" FontSize="14" VerticalAlignment="Center">
             <MenuItem Header="File" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -17,12 +17,12 @@
                 <MenuItem Header="Exit" Click="Exit_Click"/>
             </MenuItem>
         </Menu>
-        <Canvas x:Name="_mainCanvas" Height="144" Background="{DynamicResource {x:Static SystemColors.ScrollBarBrushKey}}" Width="144" Margin="7,0,6,0"/>
-        <Menu Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" FontFamily="Cooper Black" FontSize="14" Height="42" Margin="0">
-            <Label Content="Time:" Width="50" Margin="-10,0,0,0"/>
-            <Label x:Name="_lblElapsedTime" Content="0" Margin="-18,0,0,0"/>
-            <Label Content="Mines:" Margin="-10,0,0,0"/>
-            <Label x:Name="_lblMinesLeft" Content="0" Margin="-18,0,0,0"/>
-        </Menu>
+        <Canvas x:Name="_mainCanvas" Height="144" Background="{DynamicResource {x:Static SystemColors.ScrollBarBrushKey}}" Width="144" Margin="1,0,0,0"/>
+        <Canvas Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"  Height="44">
+            <Label Content="Time:" Width="50" Margin="0" FontSize="14" FontFamily="Cooper Black"/>
+            <Label x:Name="_lblElapsedTime" Content="0" FontSize="14" Width="42" Margin="0" HorizontalAlignment="Left" FontFamily="Cooper Black" Canvas.Left="50" Height="23"/>
+            <Label Content="Mines:" Margin="0" FontSize="14" FontFamily="Cooper Black" Canvas.Top="18"/>
+            <Label x:Name="_lblMinesLeft" Content="0" FontSize="14" Width="42" RenderTransformOrigin="0.286,0.385" FontFamily="Cooper Black" Canvas.Left="50" Canvas.Top="18" Height="24"/>
+        </Canvas>
     </StackPanel>
 </Window>

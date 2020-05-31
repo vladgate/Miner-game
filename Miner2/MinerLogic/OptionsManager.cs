@@ -21,32 +21,8 @@ namespace MinerLogic
             set
             {
                 _current = value;
-                //if (_current == Options.Easy)
-                //{
-                //    _gameType = GameType.Easy;
-                //}
-                //else if (_current == Options.Medium)
-                //{
-                //    _gameType = GameType.Medium;
-                //}
-                //else if (_current == Options.Hard)
-                //{
-                //    _gameType = GameType.Hard;
-                //}
-                //else
-                //{
-                //    _gameType = GameType.Custom;
-                //}
             }
         }
-
-        /// <summary>
-        /// возвращает текущий тип игры
-        /// </summary>
-        //public GameType CurrentGameType
-        //{
-        //    get { return _gameType; }
-        //}
 
         internal void SaveCurrentOptions()
         {

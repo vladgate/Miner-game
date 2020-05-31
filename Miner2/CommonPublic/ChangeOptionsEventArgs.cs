@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MinerLogic.CommonPublic
 {
-    public class ChangeOptionsEventArgs
+    public sealed class ChangeOptionsEventArgs : EventArgs
     {
         public GameType GameType { get; }
         public ChangeOptionsEventArgs(GameType gameType)

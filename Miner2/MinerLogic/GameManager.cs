@@ -121,29 +121,6 @@ namespace MinerLogic
         }
 
         /// <summary>
-        /// начальное размещение мин на поле, с учетом индекса первой ячейки, на которую щелкнули для избежания проигрыша при первом щелчке
-        /// </summary>
-        /// <param name="busyX">х-индекс первой ячейки</param>
-        /// <param name="busyY">у-индекс первой ячейки</param>
-        //private void PlaceMines(int busyX, int busyY) //
-        //{
-        //    Random rnd = new Random();
-        //    int posX, posY, alreadyMinesPlaced = 0;
-        //    while (_minesLeft > alreadyMinesPlaced)
-        //    {
-        //        posX = rnd.Next(_currentOptions.Width);
-        //        posY = rnd.Next(_currentOptions.Height);
-        //        if (posX == busyX && posY == busyY)
-        //            continue;
-        //        if (!_cells[posX, posY].IsMine)
-        //        {
-        //            _cells[posX, posY].IsMine = true;
-        //            alreadyMinesPlaced++;
-        //        }
-        //    }
-        //}
-
-        /// <summary>
         /// происходит открытие ячейки по указанному индексу по левому щелчку мыши
         /// </summary>
         /// <returns>возращает массив ячеек, которые изменили свои значения</returns>
@@ -172,7 +149,7 @@ namespace MinerLogic
                 else
                 {
                     HandleEmptyCell(indexX, indexY);
-                    if (_gameState == GameState.Loaded)
+                    if (_gameState == GameState.Loaded) //игра была только что загружена - запускаем таймер
                     {
                         _timer.Change(0, 1000);
                     }

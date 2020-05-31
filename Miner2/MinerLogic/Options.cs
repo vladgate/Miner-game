@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace MinerLogic
 {
     [Serializable]
-    internal class Options
+    internal sealed class Options
     {
         private byte _width;
         private byte _height;
@@ -92,6 +92,5 @@ namespace MinerLogic
         {
             get { return _minesAmount; }
         }
-
     }
 }

@@ -23,8 +23,8 @@ namespace Wpf_Miner
     /// </summary>
     public partial class MainWindow : Window, IMainView
     {
-        private readonly int WIDTH_CORRECTION = 20;
-        private readonly int HEIGHT_CORRECTION = 86;
+        private readonly int WIDTH_CORRECTION = 17;
+        private readonly int HEIGHT_CORRECTION = 106;
         private int _cellSize;
         private int _amountX, _amountY;
         private Image[,] _imagesArray;
@@ -106,14 +106,27 @@ namespace Wpf_Miner
             im.Name = "x" + indexX + "y" + indexY;
             im.MouseDown += Image_MouseDown;
             im.Source = _cell_closed;
-            
             im.Width = _cellSize;
             im.Height = _cellSize;
-
+            im.MouseEnter += Image_MouseEnter;
+            im.MouseLeave += Image_MouseLeave;
             Canvas.SetLeft(im, indexX * _cellSize);
             Canvas.SetTop(im, indexY * _cellSize);
             _mainCanvas.Children.Add(im);
             _imagesArray[indexX, indexY] = im;
+        }
+
+        private void Image_MouseLeave(object sender, MouseEventArgs e)
+        {
+            (sender as Image).Opacity = 1;
+        }
+
+        private void Image_MouseEnter(object sender, RoutedEventArgs e)
+        {
+            if ((sender as Image).Source == _cell_closed)
+            {
+                (sender as Image).Opacity = 0.65;
+            }
         }
 
         private void Image_MouseDown(object sender, MouseButtonEventArgs e)
@@ -127,12 +140,13 @@ namespace Wpf_Miner
             {
                 RightMouseClick?.Invoke(sender, new MouseClickEventArgs((int)ctrlPoint.X, (int)ctrlPoint.Y));
             }
+            (sender as Image).Opacity = 1;
         }
 
         public IOptionsView CreateOptionsView()
         {
             OptionsWindow optionsView = new OptionsWindow();
-            optionsView.Left = this.Left + this.Width / 2 - optionsView.Width/2;
+            optionsView.Left = this.Left + this.Width / 2 - optionsView.Width / 2;
             optionsView.Top = this.Top + this.Height / 2 - optionsView.Height / 2;
             return optionsView;
         }
@@ -153,6 +167,8 @@ namespace Wpf_Miner
                     Canvas.SetTop(im, j * _cellSize);
                     im.Name = "x" + i + "y" + j;
                     im.MouseDown += Image_MouseDown;
+                    im.MouseEnter += Image_MouseEnter;
+                    im.MouseLeave += Image_MouseLeave;
                     _imagesArray[i, j] = im;
                     _mainCanvas.Children.Add(im);
                 }

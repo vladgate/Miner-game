@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MinerLogic.MinerLogic
 {
-    internal class ElapsedTimeChangedEventArgs:EventArgs
+    internal sealed class ElapsedTimeChangedEventArgs : EventArgs
     {
         public int ElapsedTime { get; set; }
         public ElapsedTimeChangedEventArgs(int elapsedTime)
