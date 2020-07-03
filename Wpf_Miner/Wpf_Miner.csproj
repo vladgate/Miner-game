@@ -158,9 +158,6 @@
     <Resource Include="Resources\img_wrongflag.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="img_1.jpg" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="ico.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
