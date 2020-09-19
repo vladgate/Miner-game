@@ -6,22 +6,22 @@
         xmlns:local="clr-namespace:Wpf_Miner"
         mc:Ignorable="d"
         Title="Options" ResizeMode="NoResize" WindowStartupLocation="Manual" Width="355" Height="175" ShowInTaskbar="False" WindowStyle="ToolWindow">
-    <Canvas>
-        <RadioButton x:Name="_radioBtnEasy" Canvas.Top="30" Canvas.Left="4" FontSize="12" FontFamily="Century" Content="Easy (9x9, 10 mines)" Click="RadioBtNotCustom_Click"/>
-        <RadioButton x:Name="_radioBtnMedium" Canvas.Top="58" Canvas.Left="4" FontSize="12" FontFamily="Century" Content="Medium (16x16, 40 mines)" Click="RadioBtNotCustom_Click"></RadioButton>
-        <RadioButton x:Name="_radioBtnHard" Canvas.Top="87" Canvas.Left="4" FontSize="12" FontFamily="Century" Content="Hard (16x30, 99 mines)" Click="RadioBtNotCustom_Click"></RadioButton>
-        <RadioButton x:Name="_radioBtnCustom" Canvas.Top="4" Canvas.Left="187" FontSize="12" FontFamily="Century" Content="Custom" Click="RadioBtnCustom_Click"></RadioButton>
-        <Border BorderBrush="Black" BorderThickness="1" Height="86" Canvas.Left="186" Canvas.Top="20" Width="150" RenderTransformOrigin="0.5,0.5">
-            <Canvas>
-                <Label Content="Mines (10-777):" Canvas.Left="2" Canvas.Top="2" FontSize="12" FontFamily="Century"></Label>
-                <Label Content="Width (9-65):" Canvas.Left="2" Canvas.Top="30" FontSize="12" FontFamily="Century"></Label>
-                <Label Content="Height (9-50):" Canvas.Left="2" Canvas.Top="58" FontSize="12" FontFamily="Century"></Label>
-                <TextBox x:Name="_txtBoxAmountMines" Height="20" Canvas.Left="96" TextWrapping="Wrap" Text="10" Canvas.Top="4" Width="50" FontSize="14" FontFamily="Century" TextAlignment="Center" GotFocus="_txtBoxAmountMines_GotFocus" PreviewKeyDown="PreviewTxtBox_KeyDown" LostFocus="_txtBoxAmountMines_LostFocus"/>
-                <TextBox x:Name="_txtWidth" Height="20" Canvas.Left="96" TextWrapping="Wrap" Text="9" Canvas.Top="33" Width="50" FontSize="14" FontFamily="Century" TextAlignment="Center" GotFocus="_txtWidth_GotFocus" PreviewKeyDown="PreviewTxtBox_KeyDown" LostFocus="_txtWidth_LostFocus"/>
-                <TextBox x:Name="_txtHeight" Height="20" Canvas.Left="96" TextWrapping="Wrap" Text="9" Canvas.Top="61" Width="50" FontSize="14" FontFamily="Century" TextAlignment="Center" GotFocus="_txtHeight_GotFocus" PreviewKeyDown="PreviewTxtBox_KeyDown" LostFocus="_txtHeight_LostFocus"/>
-            </Canvas>
-        </Border>
-        <Button x:Name="_btnOK" Content="OK" Canvas.Left="78" Canvas.Top="109" Width="70" Height="24" FontSize="12" FontFamily="Century" Click="BtnOK_Click"/>
-        <Button x:Name="_btnCancel" Content="Cancel" Canvas.Left="186" Canvas.Top="109" Width="70" Height="24" FontSize="12" FontFamily="Century" RenderTransformOrigin="1.694,0.527" Click="BtnCancel_Click"/>
-    </Canvas>
+   <Canvas Background="{DynamicResource {x:Static SystemColors.GradientInactiveCaptionBrushKey}}">
+      <RadioButton x:Name="_radioBtnEasy" Canvas.Top="30" Canvas.Left="4" FontSize="12" FontFamily="Century" Content="Easy (9x9, 10 mines)" Click="RadioBtNotCustom_Click"/>
+      <RadioButton x:Name="_radioBtnMedium" Canvas.Top="58" Canvas.Left="4" FontSize="12" FontFamily="Century" Content="Medium (16x16, 40 mines)" Click="RadioBtNotCustom_Click"></RadioButton>
+      <RadioButton x:Name="_radioBtnHard" Canvas.Top="87" Canvas.Left="4" FontSize="12" FontFamily="Century" Content="Hard (16x30, 99 mines)" Click="RadioBtNotCustom_Click"></RadioButton>
+      <RadioButton x:Name="_radioBtnCustom" Canvas.Top="4" Canvas.Left="187" FontSize="12" FontFamily="Century" Content="Custom" Click="RadioBtnCustom_Click"></RadioButton>
+      <Border BorderBrush="Black" BorderThickness="1" Height="86" Canvas.Left="186" Canvas.Top="20" Width="150" RenderTransformOrigin="0.5,0.5">
+         <Canvas>
+            <Label Content="Mines (10-777):" Canvas.Left="2" Canvas.Top="2" FontSize="12" FontFamily="Century"></Label>
+            <Label Content="Width (9-65):" Canvas.Left="2" Canvas.Top="30" FontSize="12" FontFamily="Century"></Label>
+            <Label Content="Height (9-50):" Canvas.Left="2" Canvas.Top="58" FontSize="12" FontFamily="Century"></Label>
+            <TextBox x:Name="_txtBoxAmountMines" Height="20" Canvas.Left="96" TextWrapping="Wrap" Text="10" Canvas.Top="4" Width="50" FontSize="14" FontFamily="Century" TextAlignment="Center" GotFocus="_txtBoxAmountMines_GotFocus" PreviewKeyDown="PreviewTxtBox_KeyDown" LostFocus="_txtBoxAmountMines_LostFocus"/>
+            <TextBox x:Name="_txtWidth" Height="20" Canvas.Left="96" TextWrapping="Wrap" Text="9" Canvas.Top="33" Width="50" FontSize="14" FontFamily="Century" TextAlignment="Center" GotFocus="_txtWidth_GotFocus" PreviewKeyDown="PreviewTxtBox_KeyDown" LostFocus="_txtWidth_LostFocus"/>
+            <TextBox x:Name="_txtHeight" Height="20" Canvas.Left="96" TextWrapping="Wrap" Text="9" Canvas.Top="61" Width="50" FontSize="14" FontFamily="Century" TextAlignment="Center" GotFocus="_txtHeight_GotFocus" PreviewKeyDown="PreviewTxtBox_KeyDown" LostFocus="_txtHeight_LostFocus"/>
+         </Canvas>
+      </Border>
+      <Button x:Name="_btnOK" Content="OK" Canvas.Left="78" Canvas.Top="109" Width="70" Height="24" FontSize="12" FontFamily="Century" Click="BtnOK_Click" Background="#FFC0D0FB"/>
+      <Button x:Name="_btnCancel" Content="Cancel" Canvas.Left="186" Canvas.Top="109" Width="70" Height="24" FontSize="12" FontFamily="Century" RenderTransformOrigin="1.694,0.527" Click="BtnCancel_Click" Background="#FFC0D0FB"/>
+   </Canvas>
 </Window>

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Wpf_Miner"
         mc:Ignorable="d"
-        Title="Miner 2.0" Width="155.821" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Margin="0" Height="234.75" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Visibility="Visible" FontSize="14" Closed="Form_Closed">
+        Title="Miner" Width="155.821" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Margin="0" Height="234.75" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Visibility="Visible" FontSize="14" Closed="Form_Closed">
     <StackPanel Margin="0,0,2,8" Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}">
         <Menu x:Name="_mainMenu" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" FontFamily="Cooper Black" FontSize="14" VerticalAlignment="Center">
             <MenuItem Header="Menu" HorizontalAlignment="Center" VerticalAlignment="Center">
