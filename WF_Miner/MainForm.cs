@@ -38,7 +38,6 @@ namespace WF_Miner
         private Bitmap _cell_exploded; 
         private Bitmap _cell_wrongFlag;
 
-
         public MainForm()
         {
             InitializeComponent();
@@ -107,8 +106,6 @@ namespace WF_Miner
         {
             ExitClick?.Invoke(sender, new ExitGameEventArgs(false));
         }
-
-
 
         #region IMainView
 
