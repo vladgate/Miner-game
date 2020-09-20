@@ -14,7 +14,7 @@ namespace MinerLogic.Interfaces
         byte FieldHeight { get; set; }
 
         /// <summary>
-        /// установка доступности полей настройки количества мин, высоты, ширины
+        /// set the accessibility of the custom game options
         /// </summary>
         void EnableCustomValues(bool enable);
 

@@ -8,128 +8,127 @@ using System.Threading.Tasks;
 
 namespace MinerLogic.Interfaces
 {
-    public interface IMainView
-    {
-        short MinesLeft { set; }
-        int ElapsedTime { set; }
+   public interface IMainView
+   {
+      short MinesLeft { set; }
+      int ElapsedTime { set; }
 
-        event EventHandler<MouseClickEventArgs> LeftMouseClick;
-        event EventHandler<MouseClickEventArgs> RightMouseClick;
-        event EventHandler NewGameClick;
-        event EventHandler SaveGameClick;
-        event EventHandler LoadGameClick;
-        event EventHandler OptionsClick;
-        event EventHandler AboutClick;
-        event EventHandler<ExitGameEventArgs> ExitClick;
+      event EventHandler<MouseClickEventArgs> LeftMouseClick;
+      event EventHandler<MouseClickEventArgs> RightMouseClick;
+      event EventHandler NewGameClick;
+      event EventHandler SaveGameClick;
+      event EventHandler LoadGameClick;
+      event EventHandler OptionsClick;
+      event EventHandler AboutClick;
+      event EventHandler<ExitGameEventArgs> ExitClick;
 
-        /// <summary>
-        /// инициализирует картинки ячеек с учетом указанного размера ячейки (ширина=высота)
-        /// </summary>
-        void InitializeImages(int cellSize);
+      /// <summary>
+      /// init images of cells according to specified cell size (width=height)
+      /// </summary>
+      void InitializeImages(int cellSize);
 
-        /// <summary>
-        /// подгоняет размеры формы и игрового поля в зависимости от количества ячеек по горизонтали и вертикали
-        /// </summary>
-        void AdjustViewToCellsAmount(int amountX, int amountY);
+      /// <summary>
+      /// adjust view size and gamefield according to amount of cells horizontally and vertically
+      /// </summary>
+      void AdjustViewToCellsAmount(int amountX, int amountY);
 
-        void CreateAndAddCell(int indexX, int indexY);
-        void RemoveCell(int indexX, int indexY);
+      void CreateAndAddCell(int indexX, int indexY);
+      void RemoveCell(int indexX, int indexY);
 
-        /// <summary>
-        /// инициализирует и отрисовывает начальное игровое поле с закрытыми ячейками
-        /// </summary>
-        void DrawEmptyGameField();
+      /// <summary>
+      /// init and draw initial empty gamefield with closed cells
+      /// </summary>
+      void DrawEmptyGameField();
 
-        /// <summary>
-        /// отрисовывает начальное игровое поле с закрытыми ячейками без повторной инициализации
-        /// </summary>
-        void ClearGameField();
+      /// <summary>
+      /// clear opened cell - draw initial empty gamefield with closed cells without repeated initialization
+      /// </summary>
+      void ClearGameField();
 
-        /// <summary>
-        /// закрытие приложения
-        /// </summary>
-        void Close();
+      /// <summary>
+      /// close view and app
+      /// </summary>
+      void Close();
 
-        /// <summary>
-        /// рисует закрытую ячейку по указанному расположению 
-        /// </summary>
-        void SetClosedCell(int indexX, int indexY);
+      /// <summary>
+      /// draw closed cell at specified index
+      /// </summary>
+      void SetClosedCell(int indexX, int indexY);
 
-        /// <summary>
-        /// рисует открытую пустую ячейку по указанному расположению 
-        /// </summary>
-        void SetOpenEmptyCell(int indexX, int indexY);
-        
-        /// <summary>
-        /// рисует ячейку с пометкой (флагом) 
-        /// </summary>
-        void SetFlag(int indexX, int indexY);
+      /// <summary>
+      /// draw opened cell at specified index
+      /// </summary>
+      void SetOpenEmptyCell(int indexX, int indexY);
 
-        /// <summary>
-        /// рисует ячейку с ошибочной пометкой (флагом) 
-        /// </summary>
-        void SetWrongFlag(int indexX, int indexY);
+      /// <summary>
+      /// draw cell with flag at specified index
+      /// </summary>
+      void SetFlag(int indexX, int indexY);
 
-        /// <summary>
-        /// рисует ячейку с пометкой-знаком вопроса
-        /// </summary>
-        void SetQuestion(int indexX, int indexY);
+      /// <summary>
+      /// draw cell with wrong flag at specified index
+      /// </summary>
+      void SetWrongFlag(int indexX, int indexY);
 
-        /// <summary>
-        /// рисует ячейку с единицей
-        /// </summary>
-        void SetOne(int indexX, int indexY);
+      /// <summary>
+      /// draw cell with question mark at specified index
+      /// </summary>
+      void SetQuestion(int indexX, int indexY);
 
-        /// <summary>
-        /// рисует ячейку с двойкой
-        /// </summary>
-        void SetTwo(int indexX, int indexY);
+      /// <summary>
+      /// draw cell with '1' at specified index
+      /// </summary>
+      void SetOne(int indexX, int indexY);
 
-        /// <summary>
-        /// рисует ячейку с тройокй
-        /// </summary>
-        void SetThree(int indexX, int indexY);
+      /// <summary>
+      /// draw cell with '2' at specified index
+      /// </summary>
+      void SetTwo(int indexX, int indexY);
 
-        /// <summary>
-        /// рисует ячейку с четверкой
-        /// </summary>
-        void SetFour(int indexX, int indexY);
+      /// <summary>
+      /// draw cell with '3' at specified index
+      /// </summary>
+      void SetThree(int indexX, int indexY);
 
-        /// <summary>
-        /// рисует ячейку с пятеркой
-        /// </summary>
-        void SetFive(int indexX, int indexY);
+      /// <summary>
+      /// draw cell with '4' at specified index
+      /// </summary>
+      void SetFour(int indexX, int indexY);
 
-        /// <summary>
-        /// рисует ячейку с шестеркой
-        /// </summary>
-        void SetSix(int indexX, int indexY);
+      /// <summary>
+      /// draw cell with '5' at specified index
+      /// </summary>
+      void SetFive(int indexX, int indexY);
 
-        /// <summary>
-        /// рисует ячейку с семеркой
-        /// </summary>
-        void SetSeven(int indexX, int indexY);
+      /// <summary>
+      /// draw cell with '6' at specified index
+      /// </summary>
+      void SetSix(int indexX, int indexY);
 
-        /// <summary>
-        /// рисует ячейку с восьмеркой
-        /// </summary>
-        void SetEight(int indexX, int indexY);
+      /// <summary>
+      /// draw cell with '7' at specified index
+      /// </summary>
+      void SetSeven(int indexX, int indexY);
 
-        /// <summary>
-        /// рисует ячейку со взорваной миной
-        /// </summary>
-        void SetExploded(int indexX, int indexY);
+      /// <summary>
+      /// draw cell with '8' at specified index
+      /// </summary>
+      void SetEight(int indexX, int indexY);
 
-        /// <summary>
-        /// рисует ячейку с миной
-        /// </summary>
-        void SetMine(int indexX, int indexY);
+      /// <summary>
+      /// draw cell with exploded image at specified index
+      /// </summary>
+      void SetExploded(int indexX, int indexY);
 
-        /// <summary>
-        /// создает форму выбора настроек
-        /// </summary>
-        /// <param name="currentGameType">текущий тип игры</param>
-        /// <returns>новая форма, но не открытая</returns>
-        IOptionsView CreateOptionsView();
-    }
+      /// <summary>
+      /// draw cell with mine at specified index
+      /// </summary>
+      void SetMine(int indexX, int indexY);
+
+      /// <summary>
+      /// creates options view
+      /// </summary>
+      /// <returns>new options view</returns>
+      IOptionsView CreateOptionsView();
+   }
 }

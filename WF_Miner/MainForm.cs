@@ -42,7 +42,7 @@ namespace WF_Miner
         {
             InitializeComponent();
             OperatingSystem os = Environment.OSVersion;
-            if (IsWindows10()) //win10 корекция размеров формы
+            if (IsWindows10()) //win10 correction of view
             {
                 WIDTH_CORRECTION = 16;
                 HEIGHT_CORRECTION = 85;

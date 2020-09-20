@@ -47,7 +47,7 @@ namespace Wpf_Miner
          }
       }
    }
-   internal class MessageBoxEx
+   internal class MessageBoxEx // message box class that can be align to center of the parent window
    {
       private static IntPtr _owner;
       private static HookProc _hookProc;

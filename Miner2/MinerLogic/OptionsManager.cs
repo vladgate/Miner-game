@@ -10,12 +10,11 @@ namespace MinerLogic
     internal sealed class OptionsManager
     {
         private Options _current;
-        //private GameType _gameType;
 
         /// <summary>
-        /// возвращает текущие настройки
+        /// returns current settings
         /// </summary>
-        public Options CurrentOptions // текущие настройки
+        public Options CurrentOptions
         {
             get { return _current; }
             set
@@ -39,7 +38,7 @@ namespace MinerLogic
         }
 
         /// <summary>
-        /// востанавливаем ранее сохраненные настройки
+        /// restore previously saved settings
         /// </summary>
         public static Options OptionsFromInnerSettings()
         {
@@ -47,7 +46,7 @@ namespace MinerLogic
         }
 
         /// <summary>
-        /// возвращает тип игры га основании настроек
+        /// returns gametype according to settings
         /// </summary>
         internal GameType GetGameType(Options options)
         {

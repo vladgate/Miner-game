@@ -106,8 +106,6 @@ namespace Wpf_Miner
       {
          Image im = new Image();
          im.Name = "x" + indexX + "y" + indexY;
-         //im.MouseUp += Image_MouseUp;
-         //im.MouseDown += Image_MouseDown;
          im.Source = _cell_closed;
          im.Width = _cellSize;
          im.Height = _cellSize;
@@ -130,7 +128,6 @@ namespace Wpf_Miner
          int x = (int)ctrlPoint.X;
          int y = (int)ctrlPoint.Y;
          _imagesArray[x / _cellSize, y / _cellSize].Opacity = 1;
-         //(sender as Image).Opacity = 1;
       }
 
       private void MainCanvas_MouseDown(object sender, MouseButtonEventArgs e)

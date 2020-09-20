@@ -19,19 +19,19 @@ namespace MinerLogic
 
       private GameField _gameField;
       private OptionsManager _optionsManager;
-      private int _elapsedTime; //отображает затраченное время на форме
-      private short _minesLeft; //отображает количество оставшихся мин на форме
+      private int _elapsedTime; //for displaying elapsed time in the view
+      private short _minesLeft; //for displaying mines left in the view
       private Options _currentOptions;
       private GameState _gameState;
       private GameType _gameType;
       private Cell[,] _cells;
-      private List<Cell> _changedCells; // хранилище ячеек, которые изменились
-      private List<Cell> _recursionInvokedCells;// хранилище ячеек, которые были рекурсивно обработаны после левого клика мыши
+      private List<Cell> _changedCells; // changed cells storage
+      private List<Cell> _recursionInvokedCells;//cell's storage which have been recursively handled after left mouse click
       private bool[,] _visited;
       private Timer _timer;
       internal event EventHandler<ElapsedTimeChangedEventArgs> ElapsedTimeChanged;
 
-      private GameManager() //конструктор
+      private GameManager() //contsructor
       {
          _optionsManager = new OptionsManager(OptionsManager.OptionsFromInnerSettings());
          _currentOptions = _optionsManager.CurrentOptions;
@@ -57,7 +57,7 @@ namespace MinerLogic
       internal GameState GameState { get => _gameState; }
 
       /// <summary>
-      /// сохраняем текущие настройки в приложения
+      ///save current app settings
       /// </summary>
       internal void SaveCurrentSettings()
       {
@@ -66,7 +66,7 @@ namespace MinerLogic
       }
 
       /// <summary>
-      /// возвращает экземпляр класса GameManager как синглтон
+      /// returns GameManager as singleton
       /// </summary>
       internal static GameManager Instance
       {
@@ -81,7 +81,7 @@ namespace MinerLogic
       }
 
       /// <summary>
-      /// показывает, является ли ячейка по указанному индексу отмеченной флагом наличия мины, знаком вопроса или закрытой
+      /// indicate that cell at specified index has flag, question mark or closed
       /// </summary>
       internal bool IsClosedCell(int indexX, int indexY)
       {
@@ -90,9 +90,9 @@ namespace MinerLogic
       }
 
       /// <summary>
-      /// получает все незакрытые ячейки
+      /// gets all not closed cells
       /// </summary>
-      /// <returns>масси незакрытых ячеек</returns>
+      /// <returns>array not closed cells</returns>
       internal Cell[] GetNotClosedCells()
       {
          List<Cell> cells = new List<Cell>(_currentOptions.Width * _currentOptions.Height / 4);
@@ -110,7 +110,7 @@ namespace MinerLogic
       }
 
       /// <summary>
-      /// показывает, является ли ячейка по указанному индексу отмеченная флагом наличия мины
+      /// indicate that cell at specified index has been marked with flag
       /// </summary>
       internal bool IsFlagCell(int indexX, int indexY)
       {
@@ -118,18 +118,19 @@ namespace MinerLogic
       }
 
       /// <summary>
-      /// происходит открытие ячейки по указанному индексу по левому щелчку мыши
+      /// 
+      /// the cell at the specified index is opened by left-clicking
       /// </summary>
-      /// <returns>возращает массив ячеек, которые изменили свои значения</returns>
+      /// <returns>array with cells that have been changed their values</returns>
       internal Cell[] ApplyLeftClick(int indexX, int indexY)
       {
-         _changedCells.Clear();// очищаем хранилище для измененных ячеек
-         _recursionInvokedCells.Clear(); // очищаем хранилище для рекурсивно обработаных ячеек
-         if (_gameState == GameState.NotStarted) //надо провести начальное размещение мин на игровом поле
+         _changedCells.Clear();// clear storage for changed cells
+         _recursionInvokedCells.Clear(); //clear storage for recursively handled cells
+         if (_gameState == GameState.NotStarted) //if not started - need to place mines on the gamefield
          {
-            _gameField.PlaceMines(indexX, indexY); //размещение мин на поле
+            _gameField.PlaceMines(indexX, indexY); //place mines
             HandleEmptyCell(indexX, indexY);
-            _gameState = GameState.InProgress; // игра началась
+            _gameState = GameState.InProgress; // start game
             _timer.Change(0, 1000);
             if (_gameField.IsLastCellLeft())
             {
@@ -138,7 +139,7 @@ namespace MinerLogic
          }
          else
          {
-            if (_cells[indexX, indexY].IsMine) //попали на мину
+            if (_cells[indexX, indexY].IsMine) // click on mine
             {
                LooseGame(indexX, indexY);
                _timer.Change(-1, 1000);
@@ -146,7 +147,7 @@ namespace MinerLogic
             else
             {
                HandleEmptyCell(indexX, indexY);
-               if (_gameState == GameState.Loaded) //игра была только что загружена - запускаем таймер
+               if (_gameState == GameState.Loaded) //game was just started - stat the timer
                {
                   _timer.Change(0, 1000);
                }
@@ -154,7 +155,7 @@ namespace MinerLogic
                if (_gameField.IsLastCellLeft())
                {
                   WinGame();
-                  _timer.Change(-1, 1000);
+                  _timer.Change(-1, 1000); //stop timer
                }
             }
          }
@@ -162,10 +163,10 @@ namespace MinerLogic
       }
 
       /// <summary>
-      /// обработка попадания на мину - проигрыша
+      /// handle click on mine - loosing
       /// </summary>
-      /// <param name="cellX">х-индекс ячейки, на которой подорвались</param>
-      /// <param name="cellY">у-индекс ячейки, на которой подорвались</param>
+      /// <param name="cellX">х-horizontal index of cell</param>
+      /// <param name="cellY">у-vertical index of cell</param>
       private void LooseGame(int cellX, int cellY)
       {
          for (int i = 0; i < _currentOptions.Width; i++)
@@ -196,7 +197,7 @@ namespace MinerLogic
       }
 
       /// <summary>
-      /// обработка выигрыша
+      /// win game handler
       /// </summary>
       private void WinGame()
       {
@@ -215,7 +216,7 @@ namespace MinerLogic
       }
 
       /// <summary>
-      /// обработка открытия пустой ячейки
+      /// click on empty cell handler
       /// </summary>
       private void HandleEmptyCell(int cellX, int cellY)
       {
@@ -370,9 +371,9 @@ namespace MinerLogic
       }
 
       /// <summary>
-      /// происходят изменения элемента по указанному индексу по правому щелчку мыши
+      /// right click handler - change cell at specified index
       /// </summary>
-      /// <returns>возращает новое значение в ячейке</returns>
+      /// <returns>new cell's value</returns>
       internal Cell ApplyRightClick(int indexX, int indexY)
       {
          switch (_cells[indexX, indexY].CellValue)
@@ -393,7 +394,7 @@ namespace MinerLogic
       }
 
       /// <summary>
-      /// возвращает прошедшее с начала игры время в секундах
+      ///returns elapsed time from game start
       /// </summary>
       public int ElapsedTime
       {
@@ -401,7 +402,7 @@ namespace MinerLogic
       }
 
       /// <summary>
-      /// возвращает количество оставшихся мин с учетом открытых и отмеченых ячеек (для отображения на форме)
+      /// returns mines left amount taking into account open and marked cells (for display in view)
       /// </summary>
       public short MinesLeft
       {
@@ -409,23 +410,22 @@ namespace MinerLogic
       }
 
       /// <summary>
-      /// инициализация значений для новой игры с текущими настройками
+      /// init new game with current settings
       /// </summary>
       public void StartNewGame()
       {
          StartNewGame(_currentOptions);
       }
       /// <summary>
-      /// инициализация значений для новой игры с новыми настройками
+      /// init new game with new settings
       /// </summary>
       public void StartNewGame(Options options)
       {
-         _timer.Change(-1, 1000); //приостанавливает таймер
-         _currentOptions = options; //сохраняем новые значения настроек
+         _timer.Change(-1, 1000); //stop timer
+         _currentOptions = options; //save new options
          _gameType = _optionsManager.GetGameType(_currentOptions);
          _gameField = new GameField(_currentOptions.Width, _currentOptions.Height, _currentOptions.MinesAmount);
          _cells = _gameField.InitCellArray();
-         //_cells = _gameField.Cells;
          _minesLeft = _currentOptions.MinesAmount;
          _elapsedTime = 0;
          _gameState = GameState.NotStarted;
@@ -433,19 +433,19 @@ namespace MinerLogic
       }
 
       /// <summary>
-      /// продолжаем ранее сохраненную игру
+      /// resume saved game
       /// </summary>
-      /// <param name="gameData">данные игры</param>
+      /// <param name="gameData">data of the game</param>
       public void ContinueSavedGame(GameData gameData)
       {
-         _timer.Change(-1, 1000); //приостанавливает таймер
+         _timer.Change(-1, 1000); //stop timer
          _currentOptions = gameData.Options;
          _gameType = _optionsManager.GetGameType(_currentOptions);
          _gameField = gameData.GameField;
          _cells = _gameField.Cells;
          _minesLeft = gameData.MinesLeft;
          _elapsedTime = gameData.ElapsedTime;
-         if (_gameField.MinesPlaced) // мины были размещены на игровом поле
+         if (_gameField.MinesPlaced) //mines have been already placed on the gamefield
          {
             _gameState = GameState.Loaded;
          }
@@ -458,19 +458,9 @@ namespace MinerLogic
       }
 
       /// <summary>
-      /// возвращает последние настройки
+      /// save current game
       /// </summary>
-      public GameData DefaultSettings()
-      {
-         _currentOptions = _optionsManager.CurrentOptions;
-         return new GameData(_currentOptions, null, 0, _currentOptions.MinesAmount);
-      }
-
-      /// <summary>
-      /// сохраняет данные текущей игры
-      /// </summary>
-      /// <param name="gameData">данные игры для сохранения</param>
-      /// <returns>true если успешно сохранено</returns>
+      /// <returns>true if successfully saved</returns>
       public bool SaveCurrentGame()
       {
 
@@ -493,9 +483,9 @@ namespace MinerLogic
       }
 
       /// <summary>
-      /// получает сохраненные данные для игры
+      /// gets the saved game data
       /// </summary>
-      /// <returns>данные игры</returns>
+      /// <returns>saved game data</returns>
       public GameData LoadGame()
       {
          BinaryFormatter formatter = new BinaryFormatter();
@@ -513,10 +503,10 @@ namespace MinerLogic
    }
    internal enum GameState : byte
    {
-      NotStarted = 0, // ни одна ячейка еще не открыта
-      InProgress = 1, // ячейки уже открывались
-      Win = 2, // игра выиграна
-      Loose = 4, // игра проиграна
-      Loaded = 8 //игра только что загружена
+      NotStarted = 0, // no open cells
+      InProgress = 1, // cells have been changed (opened)
+      Win = 2, // game won
+      Loose = 4, // game is lost
+      Loaded = 8 //game just has been loaded
    }
 }

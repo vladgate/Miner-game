@@ -8,12 +8,12 @@ namespace MinerLogic.MinerPresenter
 {
     public sealed class MouseClickEventArgs : EventArgs
     {
-        /// <summary>
-        /// класс для инкапсуляции координат нажатия мышки относительно всего игрового поля
-        /// </summary>
-        /// <param name="x">x-ккордината в пределах всего игрового поля</param>
-        /// <param name="y">y-ккордината в пределах всего игрового поля</param>
-        public MouseClickEventArgs(int x, int y)
+      /// <summary>
+      /// class for incapsulation of coordinates mouse click relative to entire gamefield
+      /// </summary>
+      /// <param name="x">x-coord relatively to gamefield</param>
+      /// <param name="y">x-coord relatively to gamefield</param>
+      public MouseClickEventArgs(int x, int y)
         {
             X = x;
             Y = y;

@@ -125,7 +125,7 @@ namespace Wpf_Miner
 
         private void PreviewTxtBox_KeyDown(object sender, KeyEventArgs e)
         {
-            bool FirstZero() //проверяем, есть ли ноль первой цифрой
+            bool FirstZero() //check if the '0' is firts digit
             {
                 if ((e.Key == Key.D0 || e.Key == Key.NumPad0) && ((TextBox)sender).Text == "")
                 {

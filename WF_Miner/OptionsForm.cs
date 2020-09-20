@@ -166,7 +166,7 @@ namespace WF_Miner
 
         private void TxtBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            bool FirstZero() //проверяем, есть ли ноль первой цифрой
+            bool FirstZero() //check if the '0' is first digit
             {
                 if (e.KeyChar == '0' && ((TextBox)sender).Text == "")
                 {

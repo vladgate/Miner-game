@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 namespace MinerLogic
 {
     [Serializable]
-    internal sealed class GameData // класс для сохранения/загрузки/начала игры
+    internal sealed class GameData // class for save/load game
     {
         private GameField _gameField;
         private Options _options;
-        private int _elapsedTime; //отображает затраченное время на форме
-        private short _minesLeft; //отображает количество оставшихся мин на форме
+        private int _elapsedTime;
+        private short _minesLeft;
 
         public GameData(Options options, GameField gameField, int elapsedTime, short minesLeft)
         {
